@@ -4,7 +4,7 @@ export async function POST(request: Request) {
         const { telegramId } = body;
 
 
-        const url = process.env.API_URL
+        const url = process.env.REMNAWAVE_PLAIN_DOMAIN
         const token = process.env.API_TOKEN
 
         const res = await fetch(`https://${url}/api/users/tg/${telegramId}`, {
