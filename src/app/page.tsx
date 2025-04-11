@@ -36,7 +36,7 @@ export default function Home() {
                 setIsLoading(true);
                 try {
                     const user = await fetchUserByTelegramId(telegramId);
-                    if(user) setSubscription(null);
+                    if(user) setSubscription(user);
                 } catch (error) {
                     console.error('Failed to fetch subscription:', error)
 
