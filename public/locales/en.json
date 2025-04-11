@@ -2,6 +2,8 @@
   "main": {
     "page": {
       "component": {
+        "buy": "Buy subscription",
+        "no-sub": "You don't have a subscription",
         "podpiska": "Subscription"
       }
     }

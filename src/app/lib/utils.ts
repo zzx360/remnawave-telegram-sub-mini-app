@@ -17,13 +17,14 @@ export const calculateDaysLeft = (expireAt: string): number => {
 dayjs.extend(relativeTime);
 export function getExpirationTextUtil(
     expireAt: Date | null | string,
-    t: ReturnType<typeof useTranslations>
+    t: ReturnType<typeof useTranslations>,
+    locale: string,
 ): string {
     if (!expireAt) {
         return t('get-expiration-text.util.unknown');
     }
 
-    const expiration = dayjs(expireAt);
+    const expiration = dayjs(expireAt).locale(locale);
     const now = dayjs();
     if (expiration.isBefore(now)) {
         return t('get-expiration-text.util.expired', {

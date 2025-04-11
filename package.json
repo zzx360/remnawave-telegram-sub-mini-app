@@ -14,6 +14,7 @@
     "@telegram-apps/sdk-react": "^2.0.22",
     "dotenv": "^16.4.7",
     "eruda": "^3.0.1",
+    "lottie-react": "^2.4.1",
     "next": "14.2.4",
     "next-intl": "^3.17.6",
     "ofetch": "^1.4.1",

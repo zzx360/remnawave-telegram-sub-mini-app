@@ -14,7 +14,6 @@ import {IconChevronDown} from "@tabler/icons-react";
 export const LocaleSwitcher: FC = () => {
   const locale = useLocale();
 
-  const { toggleDirection } = useDirection()
   const [opened, setOpened] = useState(false)
 
   const changeLanguage = (value: string) => {

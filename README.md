@@ -111,7 +111,6 @@ $ pnpm run dev:https
 Visiting the `Local` link (`https://localhost:3000` in this example) in your
 browser, you will see the following warning:
 
-![SSL Warning](assets/ssl-warning.png)
 
 This browser warning is normal and can be safely ignored as long as the site is
 secure. Click the `Proceed to localhost (unsafe)` button to continue and view

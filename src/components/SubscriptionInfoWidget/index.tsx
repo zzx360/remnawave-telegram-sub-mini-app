@@ -9,7 +9,7 @@ import {
 import { Accordion, rgba, SimpleGrid, Stack, Text, ThemeIcon } from '@mantine/core'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import dayjs from 'dayjs'
-import {useTranslations} from "next-intl";
+import {useLocale, useTranslations} from "next-intl";
 import {InfoBlock } from "@/components/InfoBlock/InfoBlock";
 import {IUserData} from "@/app/types/types";
 import {bytesToGigabytes, calculateDaysLeft, getExpirationTextUtil} from "@/app/lib/utils";
@@ -19,6 +19,7 @@ dayjs.extend(relativeTime)
 export const SubscriptionInfoWidget = ({ user }: { user: IUserData }) => {
 
     const t = useTranslations();
+    const lang = useLocale();
 
     if (!user) return null
 
@@ -80,7 +81,7 @@ export const SubscriptionInfoWidget = ({ user }: { user: IUserData }) => {
                             {user.username}
                         </Text>
                         <Text c={daysLeft === 0 ? 'red' : 'dimmed'} size="xs">
-                            {getExpirationTextUtil(user.expireAt, t)}
+                            {getExpirationTextUtil(user.expireAt, t, lang)}
                         </Text>
                     </Stack>
                 </Accordion.Control>
