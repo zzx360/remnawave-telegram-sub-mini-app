@@ -28,9 +28,6 @@ export default function Home() {
     const [isLoading, setIsLoading] = useState(true);
     const [config, setConfig] = useState<{ cryptoLink: boolean; buyLink: string } | null>(null);
 
-
-
-
     useEffect(() => {
         fetch('/api/getEnvConfig')
             .then((res) => res.json())
@@ -39,7 +36,6 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-
         if(telegramId) {
             const fetchSubscription = async () => {
                 setIsLoading(true);
@@ -57,7 +53,6 @@ export default function Home() {
 
             fetchSubscription();
         }
-
 
     }, [telegramId]);
 
@@ -94,7 +89,7 @@ export default function Home() {
                     <Center>
                         <Stack gap="xl">
                         <Title style={{textAlign: 'center'}} order={4}>{t('main.page.component.no-sub')}</Title>
-                        <Box w={200}>
+                        <Box className={classes.animateBox} w={200}>
                             <Lottie animationData={noSubAnimate} loop={true} />
                         </Box>
                             <Button component='a' href={config?.buyLink}  target="_blank" color="grape" >{t('main.page.component.buy')}</Button>
@@ -114,12 +109,10 @@ export default function Home() {
                         <LocaleSwitcher />
                     </Group>
                 </Group>
-
                 <Stack gap="xl">
                         <SubscriptionInfoWidget user={subscription} />
                         <InstallationGuideWidget user={subscription}  appsConfig={appsConfig} isCryptoLinkEnabled={config?.cryptoLink} />
                 </Stack>
-
                 <Center>
                 </Center>
             </Stack>
