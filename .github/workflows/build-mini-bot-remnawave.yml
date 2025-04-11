@@ -35,11 +35,9 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.repository_owner }}/remnawave-mini-bot
-          flavor: latest=true
           tags: |
-            type=sha
+            type=raw,value=latest
             type=raw,value=${{ github.ref_name }}
-            type=ref,event=tag
 
       # Сборка и пуш
       - name: Build and push
