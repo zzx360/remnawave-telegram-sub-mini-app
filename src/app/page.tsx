@@ -26,8 +26,17 @@ export default function Home() {
     const [subscriptionLoaded, setSubscriptionLoaded] = useState(false)
     const [appsConfig, setAppsConfig] = useState<IPlatformConfig | null>(null)
     const [isLoading, setIsLoading] = useState(true);
+    const [config, setConfig] = useState<{ cryptoLink: boolean; buyLink: string } | null>(null);
 
-    const buyLink = process.env.NEXT_PUBLIC_BUY_LINK;
+
+
+
+    useEffect(() => {
+        fetch('/api/getEnvConfig')
+            .then((res) => res.json())
+            .then((data) => setConfig(data))
+            .catch((err) => console.error('Failed to load config:', err));
+    }, []);
 
     useEffect(() => {
 
@@ -88,7 +97,7 @@ export default function Home() {
                         <Box w={200}>
                             <Lottie animationData={noSubAnimate} loop={true} />
                         </Box>
-                            <Button component='a' href={buyLink}  target="_blank" color="grape" >{t('main.page.component.buy')}</Button>
+                            <Button component='a' href={config?.buyLink}  target="_blank" color="grape" >{t('main.page.component.buy')}</Button>
                         </Stack>
                     </Center>
             </Container>
@@ -108,7 +117,7 @@ export default function Home() {
 
                 <Stack gap="xl">
                         <SubscriptionInfoWidget user={subscription} />
-                        <InstallationGuideWidget user={subscription}  appsConfig={appsConfig} />
+                        <InstallationGuideWidget user={subscription}  appsConfig={appsConfig} isCryptoLinkEnabled={config?.cryptoLink} />
                 </Stack>
 
                 <Center>

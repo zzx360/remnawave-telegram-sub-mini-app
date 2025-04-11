@@ -18,11 +18,10 @@ import {IUserData} from "@/app/types/types";
 import {IAppConfig, IPlatformConfig} from "@/app/types/appList";
 import {BaseInstallationGuideWidget} from "@/components/BaseInstallationGuideWidget";
 
-export const InstallationGuideWidget = ({ appsConfig, user }: { appsConfig: IPlatformConfig, user: IUserData }) => {
+export const InstallationGuideWidget = ({ appsConfig, user, isCryptoLinkEnabled }: { appsConfig: IPlatformConfig, user: IUserData, isCryptoLinkEnabled: boolean | undefined }) => {
     const t = useTranslations();
     const initDataState = useSignal(initData.state);
     const lang = useLocale();
-    const cryptoLinkEnabled = process.env.NEXT_PUBLIC_CRYPTO_LINK;
 
     const os = useOs()
 
@@ -82,7 +81,7 @@ export const InstallationGuideWidget = ({ appsConfig, user }: { appsConfig: IPla
             const encoded = btoa(`${subscriptionUrl}`)
             const encodedUrl = `${urlScheme}${encoded}`
             window.open(encodedUrl, '_blank')
-        } else if(urlScheme.startsWith('happ') && cryptoLinkEnabled) {
+        } else if(urlScheme.startsWith('happ') && isCryptoLinkEnabled) {
             window.open(user.happ.cryptoLink, '_blank')
         } else {
             window.open(`${urlScheme}${subscriptionUrl}`, '_blank')
