@@ -1,12 +1,43 @@
+export async function POST(request: Request) {
+    try {
+        // const body = await request.json();
+        // const { telegramId } = body;
+        //
+        //
+        // const baseUrl = process.env.REMNAWAVE_URL
+        // const token = process.env.REMNAWAVE_TOKEN
+        // const httpMode  = process.env.REMNAWAVE_MODE === 'local' ? 'http' : 'https'
+        const cryptoLink = process.env.CRYPTO_LINK
+        const buyLink = process.env.BUY_LINK
 
-export async function GET() {
-    console.log('ПОЛУЧАЕМ ENV')
-    const cryptoLink = process.env.CRYPTO_LINK
-    const buyLink = process.env.BUY_LINK
-    const config = {
-        cryptoLink,
-        buyLink
-    };
+        // const url = `${httpMode}://${baseUrl}/api/users/tg/${telegramId}`
+        // const localHeadersParam = {
+        //     'x-forwarded-for': '127.0.0.1',
+        //     'x-forwarded-proto': 'https'
+        // }
+        // const headers = {
+        //     Authorization: `Bearer ${token}`,
+        //     ...(httpMode === 'http' ? localHeadersParam : {}),
+        // }
+        //
+        // const res = await fetch(url, {
+        //     method: 'GET',
+        //     headers,
+        // });
 
-    console.log('API CONFIG', config);
-    return new Response(JSON.stringify(config), { status: 200 });}
+        // if (!res.ok) {
+        //     console.error(`Error API: ${res.status} ${res.statusText}`);
+        //     return new Response(
+        //         JSON.stringify({ error: 'Error while fetching data from the remote API' }),
+        //         { status: res.status }
+        //     );
+        // }
+
+        // const data = await res.json();
+        return new Response(JSON.stringify({cryptoLink, buyLink}), { status: 200 });
+
+    } catch (error) {
+        console.error('Error:', error);
+        return new Response(JSON.stringify({ error: 'Server error.' }), { status: 500 });
+    }
+}

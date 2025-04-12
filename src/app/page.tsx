@@ -24,23 +24,23 @@ export default function Home() {
 
     const initDataState = useSignal(initData.state);
     const telegramId = initDataState?.user?.id
-    const [subscription, setSubscription] = useState<{ cryptoLink: boolean; buyLink: string } | null>(null);
+    const [subscription, setSubscription] = useState<IUserData | null>(null);
     const [subscriptionLoaded, setSubscriptionLoaded] = useState(false)
     const [appsConfig, setAppsConfig] = useState<IPlatformConfig | null>(null)
     const [isLoading, setIsLoading] = useState(true);
-    const [config, setConfig] = useState<{ cryptoLink: boolean; buyLink: string } | null>(null);
+    const [configEnv, setConfigEnv] = useState<{ cryptoLink: boolean; buyLink: string } | null>(null);
 
 
-    console.log('PAGE CONFIG', config)
+    console.log('PAGE CONFIG', configEnv)
 
     useEffect(() => {
         setIsLoading(true)
 
         const fetchConfig = async () => {
             try {
-                const cofingEnv = await fetchAppEnv() as { cryptoLink: boolean; buyLink: string }
+                const cofingEnv = await fetchAppEnv()
                 console.log('CONFIG', cofingEnv)
-                setConfig(cofingEnv)
+                if(cofingEnv) setConfigEnv(cofingEnv)
             } catch (error) {
                 console.error('Failed to fetch app config:', error)
             } finally {
@@ -60,12 +60,7 @@ export default function Home() {
                 setIsLoading(true);
                 try {
                     const user = await fetchUserByTelegramId(telegramId);
-                    if (user) {
-                        setSubscription({
-                            cryptoLink: user.cryptoLink,
-                            buyLink: user.buyLink,
-                        });
-                    }
+                    if(user) setSubscription(user);
                 } catch (error) {
                     console.error('Failed to fetch subscription:', error)
 
@@ -116,7 +111,7 @@ export default function Home() {
                         <Box className={classes.animateBox} w={200}>
                             <Lottie animationData={noSubAnimate} loop={true} />
                         </Box>
-                            <Button component='a' href={config?.buyLink}  target="_blank" color="grape" >{t('main.page.component.buy')}</Button>
+                            <Button component='a' href={configEnv?.buyLink}  target="_blank" color="grape" >{t('main.page.component.buy')}</Button>
                         </Stack>
                     </Center>
             </Container>
@@ -134,9 +129,9 @@ export default function Home() {
                     </Group>
                 </Group>
                 <Stack gap="xl">
-                    {JSON.stringify(subscription)}
-                        {/*<SubscriptionInfoWidget user={subscription} />*/}
-                        {/*<InstallationGuideWidget user={subscription}  appsConfig={appsConfig} isCryptoLinkEnabled={config?.cryptoLink} />*/}
+                    {JSON.stringify(configEnv)}
+                        <SubscriptionInfoWidget user={subscription} />
+                        <InstallationGuideWidget user={subscription}  appsConfig={appsConfig} isCryptoLinkEnabled={configEnv?.cryptoLink} />
                 </Stack>
                 <Center>
                 </Center>

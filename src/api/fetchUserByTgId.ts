@@ -15,8 +15,8 @@ export async function fetchUserByTelegramId(telegramId: number) {
             throw new Error('Ошибка при запросе данных.');
         }
 
-        const response : {cryptoLink: boolean, buyLink: string} = await res.json();
-        return response
+        const { response } : subscriptionsResponse = await res.json();
+        return response[0]
 
 
     } catch (error) {
