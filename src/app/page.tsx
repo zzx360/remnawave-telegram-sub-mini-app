@@ -17,7 +17,6 @@ import {InstallationGuideWidget} from "@/components/InstallationGuideWidget";
 import {IUserData} from "@/types/types";
 
 import classes from './app.module.css'
-import {Link} from "@/components/Link/Link";
 
 export default function Home() {
     const t = useTranslations();
@@ -30,16 +29,12 @@ export default function Home() {
     const [isLoading, setIsLoading] = useState(true);
     const [configEnv, setConfigEnv] = useState<{ cryptoLink: boolean; buyLink: string } | null>(null);
 
-
-    console.log('PAGE CONFIG', configEnv)
-
     useEffect(() => {
         setIsLoading(true)
 
         const fetchConfig = async () => {
             try {
                 const cofingEnv = await fetchAppEnv()
-                console.log('CONFIG', cofingEnv)
                 if(cofingEnv) setConfigEnv(cofingEnv)
             } catch (error) {
                 console.error('Failed to fetch app config:', error)
@@ -48,7 +43,6 @@ export default function Home() {
             }
 
         }
-
 
         fetchConfig()
 
@@ -129,14 +123,12 @@ export default function Home() {
                     </Group>
                 </Group>
                 <Stack gap="xl">
-                    {JSON.stringify(configEnv)}
                         <SubscriptionInfoWidget user={subscription} />
                         <InstallationGuideWidget user={subscription}  appsConfig={appsConfig} isCryptoLinkEnabled={configEnv?.cryptoLink} />
                 </Stack>
                 <Center>
                 </Center>
             </Stack>
-            <Link href="/next">GO</Link>
         </Container>
     )
 

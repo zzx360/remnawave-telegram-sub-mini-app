@@ -1,4 +1,3 @@
-import {subscriptionsResponse} from "@/types/types";
 
 export async function fetchAppEnv() {
 
