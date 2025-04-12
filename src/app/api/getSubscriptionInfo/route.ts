@@ -4,11 +4,15 @@ export async function POST(request: Request) {
         const { telegramId } = body;
 
 
-        const url = process.env.REMNAWAVE_URL
+        const baseUrl = process.env.REMNAWAVE_URL
         const token = process.env.REMNAWAVE_TOKEN
         const httpMode  = process.env.REMNAWAVE_MODE === 'local' ? 'http' : 'https'
 
-        const res = await fetch(`${httpMode}://${url}/api/users/tg/${telegramId}`, {            method: 'GET',
+        const url = `${httpMode}://${baseUrl}/api/users/tg/${telegramId}`
+        console.log(URL, url)
+
+        const res = await fetch(url, {
+            method: 'GET',
             headers: {
                 Authorization: `Bearer ${token}`,
             },
