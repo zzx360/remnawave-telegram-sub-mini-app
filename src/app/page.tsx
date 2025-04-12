@@ -8,6 +8,7 @@ import {Box, Button, Center, Container, Group, Stack, Title} from '@mantine/core
 import { LocaleSwitcher } from '@/components/LocaleSwitcher/LocaleSwitcher';
 import { SubscriptionInfoWidget } from '@/components/SubscriptionInfoWidget';
 import { fetchUserByTelegramId } from '@/api/fetchUserByTgId'
+import {fetchAppEnv} from "@/api/fetchAppEnv";
 import {initData, useSignal} from "@telegram-apps/sdk-react";
 import {Loading} from "@/components/Loading/Loading";
 import {ofetch} from "ofetch";
@@ -32,10 +33,24 @@ export default function Home() {
     console.log('PAGE CONFIG', config)
 
     useEffect(() => {
-        fetch('/api/getEnvConfig')
-            .then((res) => res.json())
-            .then((data) => setConfig(data))
-            .catch((err) => console.error('Failed to load config:', err));
+        setIsLoading(true)
+
+        const fetchConfig = async () => {
+            try {
+                const cofingEnv = await fetchAppEnv() as { cryptoLink: boolean; buyLink: string }
+                console.log('CONFIG', cofingEnv)
+                setConfig(cofingEnv)
+            } catch (error) {
+                console.error('Failed to fetch app config:', error)
+            } finally {
+                setIsLoading(false)
+            }
+
+        }
+
+
+        fetchConfig()
+
     }, []);
 
     useEffect(() => {

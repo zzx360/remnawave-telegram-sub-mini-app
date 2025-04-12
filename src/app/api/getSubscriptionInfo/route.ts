@@ -9,15 +9,18 @@ export async function POST(request: Request) {
         const httpMode  = process.env.REMNAWAVE_MODE === 'local' ? 'http' : 'https'
 
         const url = `${httpMode}://${baseUrl}/api/users/tg/${telegramId}`
-        console.log(URL, url)
+        const localHeadersParam = {
+            'x-forwarded-for': '127.0.0.1',
+            'x-forwarded-proto': 'https'
+        }
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            ...(httpMode === 'http' ? localHeadersParam : {}),
+        }
 
         const res = await fetch(url, {
             method: 'GET',
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'x-forwarded-for': '127.0.0.1',
-                'x-forwarded-proto': 'https'
-            },
+            headers,
         });
 
         if (!res.ok) {
