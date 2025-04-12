@@ -1,3 +1,4 @@
+import {Test} from "@/components/Test/Test";
 
 export default function Next() {
     const cryptoLink = process.env.CRYPTO_LINK
@@ -11,6 +12,8 @@ export default function Next() {
     return (
 <>
 <div>NEXT</div>
+    {cryptoLink && buyLink && <Test crypto={cryptoLink} buy={buyLink}/>
+    }
 </>
     );
 };
