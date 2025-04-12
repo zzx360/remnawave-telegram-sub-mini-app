@@ -24,7 +24,7 @@ export default function Home() {
 
     const initDataState = useSignal(initData.state);
     const telegramId = initDataState?.user?.id
-    const [subscription, setSubscription] = useState<IUserData | null>(null);
+    const [subscription, setSubscription] = useState<{ cryptoLink: boolean; buyLink: string } | null>(null);
     const [subscriptionLoaded, setSubscriptionLoaded] = useState(false)
     const [appsConfig, setAppsConfig] = useState<IPlatformConfig | null>(null)
     const [isLoading, setIsLoading] = useState(true);
@@ -60,7 +60,12 @@ export default function Home() {
                 setIsLoading(true);
                 try {
                     const user = await fetchUserByTelegramId(telegramId);
-                    if(user) setSubscription(user);
+                    if (user) {
+                        setSubscription({
+                            cryptoLink: user.cryptoLink,
+                            buyLink: user.buyLink,
+                        });
+                    }
                 } catch (error) {
                     console.error('Failed to fetch subscription:', error)
 
