@@ -28,6 +28,9 @@ export default function Home() {
     const [isLoading, setIsLoading] = useState(true);
     const [config, setConfig] = useState<{ cryptoLink: boolean; buyLink: string } | null>(null);
 
+
+    console.log('PAGE CONFIG', config)
+
     useEffect(() => {
         fetch('/api/getEnvConfig')
             .then((res) => res.json())

@@ -1,10 +1,11 @@
-import { NextResponse } from 'next/server';
 
 export async function GET() {
+    const cryptoLink = process.env.CRYPTO_LINK
+    const buyLink = process.env.BUY_LINK
     const config = {
-        cryptoLink: process.env.CRYPTO_LINK === 'true',
-        buyLink: process.env.BUY_LINK || ''
+        cryptoLink,
+        buyLink
     };
 
-    return NextResponse.json(config);
-}
+    console.log('API CONFIG', config);
+    return new Response(JSON.stringify(config), { status: 200 });}
