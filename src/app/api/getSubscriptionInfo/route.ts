@@ -7,6 +7,8 @@ export async function POST(request: Request) {
         const baseUrl = process.env.REMNAWAVE_URL
         const token = process.env.REMNAWAVE_TOKEN
         const httpMode  = process.env.REMNAWAVE_MODE === 'local' ? 'http' : 'https'
+        const cryptoLink = process.env.CRYPTO_LINK
+        const buyLink = process.env.BUY_LINK
 
         const url = `${httpMode}://${baseUrl}/api/users/tg/${telegramId}`
         const localHeadersParam = {
@@ -32,7 +34,7 @@ export async function POST(request: Request) {
         }
 
         const data = await res.json();
-        return new Response(JSON.stringify(data), { status: 200 });
+        return new Response(JSON.stringify({cryptoLink, buyLink}), { status: 200 });
 
     } catch (error) {
         console.error('Error:', error);

@@ -129,8 +129,9 @@ export default function Home() {
                     </Group>
                 </Group>
                 <Stack gap="xl">
-                        <SubscriptionInfoWidget user={subscription} />
-                        <InstallationGuideWidget user={subscription}  appsConfig={appsConfig} isCryptoLinkEnabled={config?.cryptoLink} />
+                    {JSON.stringify(subscription)}
+                        {/*<SubscriptionInfoWidget user={subscription} />*/}
+                        {/*<InstallationGuideWidget user={subscription}  appsConfig={appsConfig} isCryptoLinkEnabled={config?.cryptoLink} />*/}
                 </Stack>
                 <Center>
                 </Center>
