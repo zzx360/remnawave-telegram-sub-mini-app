@@ -14,8 +14,8 @@ import {
     IconExternalLink
 } from '@tabler/icons-react'
 
-import {IUserData} from "@/app/types/types";
-import {IAppConfig, IPlatformConfig} from "@/app/types/appList";
+import {IUserData} from "@/types/types";
+import {IAppConfig, IPlatformConfig} from "@/types/appList";
 import {BaseInstallationGuideWidget} from "@/components/BaseInstallationGuideWidget";
 
 export const InstallationGuideWidget = ({ appsConfig, user, isCryptoLinkEnabled }: { appsConfig: IPlatformConfig, user: IUserData, isCryptoLinkEnabled: boolean | undefined }) => {

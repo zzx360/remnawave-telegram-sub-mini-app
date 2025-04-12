@@ -7,8 +7,8 @@ import {
     IconStar
 } from '@tabler/icons-react'
 import { Box, Button, Group, Text, ThemeIcon, Timeline } from '@mantine/core'
-import {IAppConfig} from "@/app/types/appList";
-import {IPlatformGuideProps} from "@/app/types/platforGuide";
+import {IAppConfig} from "@/types/appList";
+import {IPlatformGuideProps} from "@/types/platforGuide";
 import {useTranslations} from "next-intl";
 
 

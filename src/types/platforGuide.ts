@@ -1,4 +1,4 @@
-import {IAppConfig, IPlatformConfig} from "@/app/types/appList";
+import {IAppConfig, IPlatformConfig} from "@/types/appList";
 
 
 export interface IPlatformGuideProps {

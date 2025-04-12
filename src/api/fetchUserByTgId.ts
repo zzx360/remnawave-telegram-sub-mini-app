@@ -1,4 +1,4 @@
-import {subscriptionsResponse} from "@/app/types/types";
+import {subscriptionsResponse} from "@/types/types";
 
 export async function fetchUserByTelegramId(telegramId: number) {
 

@@ -1,5 +1,5 @@
 import { Group, Paper, Text, ThemeIcon } from '@mantine/core'
-import {IInfoBlockProps} from "@/app/types/types";
+import {IInfoBlockProps} from "@/types/types";
 
 export const InfoBlock = (props: IInfoBlockProps) => {
     const { color, icon, title, value } = props

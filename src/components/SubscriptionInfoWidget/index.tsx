@@ -11,8 +11,8 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import dayjs from 'dayjs'
 import {useLocale, useTranslations} from "next-intl";
 import {InfoBlock } from "@/components/InfoBlock/InfoBlock";
-import {IUserData} from "@/app/types/types";
-import {bytesToGigabytes, calculateDaysLeft, getExpirationTextUtil} from "@/app/lib/utils";
+import {IUserData} from "@/types/types";
+import {bytesToGigabytes, calculateDaysLeft, getExpirationTextUtil} from "@/lib/utils";
 
 dayjs.extend(relativeTime)
 

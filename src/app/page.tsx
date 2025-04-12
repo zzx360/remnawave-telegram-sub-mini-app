@@ -12,11 +12,12 @@ import {fetchAppEnv} from "@/api/fetchAppEnv";
 import {initData, useSignal} from "@telegram-apps/sdk-react";
 import {Loading} from "@/components/Loading/Loading";
 import {ofetch} from "ofetch";
-import {IPlatformConfig} from "@/app/types/appList";
+import {IPlatformConfig} from "@/types/appList";
 import {InstallationGuideWidget} from "@/components/InstallationGuideWidget";
-import {IUserData} from "@/app/types/types";
+import {IUserData} from "@/types/types";
 
 import classes from './app.module.css'
+import {Link} from "@/components/Link/Link";
 
 export default function Home() {
     const t = useTranslations();
@@ -134,6 +135,7 @@ export default function Home() {
                 <Center>
                 </Center>
             </Stack>
+            <Link href="/next">GO</Link>
         </Container>
     )
 
