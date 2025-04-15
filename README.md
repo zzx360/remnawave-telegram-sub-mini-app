@@ -6,6 +6,7 @@ This is the **Telegram Subscription App** for Remnawave (https://remna.st/).
 The page allows see their subscriptions directly through Telegram. As a requirement for using the page, the **Telegram ID** must be set in the user's profile to ensure proper identification and linking of subscriptions.
 
 
+![Mini app](assets/app.png)
 
 ## Features
 
