@@ -62,7 +62,6 @@ export default function Home() {
                         setSubscription(user);
                     }
                 } catch (error) {
-                    console.log(error)
                     setErrorConnect(true);
                     console.error('Failed to fetch subscription:', error)
                 } finally {

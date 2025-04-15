@@ -33,7 +33,7 @@ export async function GET(request: Request) {
         if (!res.ok) {
             console.error(`Error API: ${res.status} ${res.statusText}`);
             return new Response(
-                JSON.stringify({ error: 'Error while fetching data from the remote API' }),
+                JSON.stringify({ error: res.statusText }),
                 { status: res.status }
             );
         }
