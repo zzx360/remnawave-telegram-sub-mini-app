@@ -47,7 +47,7 @@ The application requires the following environment variables to be set:
 2. Download and configure the environment variables.
 
    ```bash
-   curl -o .env 
+   curl -o .env https://raw.githubusercontent.com/maposia/remnawave-telegram-mini-bot/refs/heads/main/.env.example
       ```
 
 3. Configure the environment variables.
@@ -55,29 +55,34 @@ The application requires the following environment variables to be set:
    nano .env
       ```
    
-4. Create docker-compose.yml file, example below.
+4. Create docker-compose.yml file
 
-```docker
+   ```bash
+   nano docker-compose.yml
+      ```
+Example below.
+
+```yaml
 services:
-  remnawave-mini-app:
-    image: ghcr.io/maposia/remnawave-telegram-sub-mini-app:latest
-    container_name: remnawave-telegram-mini-app
-    hostname: remnawave-telegram-mini-app
-    env_file:
-      - .env
-    restart: always
-#    volumes:
-#      - ./app-config.json:/app/dist/assets/app-config.json
-    ports:
-      - '127.0.0.1:3020:3020'
-    networks:
-      - remnawave-network
+   remnawave-mini-app:
+      image: ghcr.io/maposia/remnawave-telegram-sub-mini-app:latest
+      container_name: remnawave-telegram-mini-app
+      hostname: remnawave-telegram-mini-app
+      env_file:
+         - .env
+      restart: always
+      # volumes:
+      #   - ./app-config.json:/app/dist/assets/app-config.json
+      ports:
+         - '127.0.0.1:3020:3020'
+      networks:
+         - remnawave-network
 
 networks:
-  remnawave-network:
-    name: remnawave-network
-    driver: bridge
-    external: true
+   remnawave-network:
+      name: remnawave-network
+      driver: bridge
+      external: true
 ```
 
 5. Run containers.
