@@ -10,7 +10,7 @@ The page allows see their subscriptions directly through Telegram. As a requirem
 
 ## Features
 
-- View subscriptions under your Telegram profile
+- View your subscriptions in the mini app
 - Multi-language support (English, Russian)
 
 ## Environment Variables
