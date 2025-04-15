@@ -17,13 +17,13 @@ The page allows see their subscriptions directly through Telegram. As a requirem
 
 The application requires the following environment variables to be set:
 
-| Variable          | Description                                                                                                          |
-|-------------------|----------------------------------------------------------------------------------------------------------------------|
-| `REMNAWAVE_URL`   | Remnawave API URL                                                                                                    |
-| `REMNAWAVE_MODE`  | Remnawave mode (remote/local), default is remote. If local set – you can pass http://remnawave:3000 to REMNAWAVE_URL |
-| `REMNAWAVE_TOKEN` | Authentication token for Remnawave API                                                                               |
-| `BUY_LINK`        | The URL for purchase actions                                                                                         |
-| `CRYPTO_LINK`     | Allows using encrypted links (currently supported Happ application)                                                  |
+| Variable          | Description                                                                                                   |
+|-------------------|---------------------------------------------------------------------------------------------------------------|
+| `REMNAWAVE_URL`   | Remnawave API PLAIN DOMAIN(panel.domain.com)                                                                  |
+| `REMNAWAVE_MODE`  | Remnawave mode (remote/local), default is remote. If local set – you can pass remnawave:3000 to REMNAWAVE_URL |
+| `REMNAWAVE_TOKEN` | Authentication token for Remnawave API                                                                        |
+| `BUY_LINK`        | The URL for purchase actions                                                                                  |
+| `CRYPTO_LINK`     | Allows using encrypted links (currently supported Happ application)                                           |
 
 
 ## Plugins and Dependencies
@@ -73,15 +73,36 @@ services:
          - .env
       restart: always
       # volumes:
-      #   - ./app-config.json:/app/dist/assets/app-config.json
+      #   - ./app-config.json:/app/public/assets/app-config.json
       ports:
          - '127.0.0.1:3020:3020'
-      networks:
-         - remnawave-network
+#      networks:
+#         - remnawave-network
+
+#networks:
+#   remnawave-network:
+#     name: remnawave-network
+#      driver: bridge
+#      external: true
+```
+
+Uncomment if you want to use your own template downloaded from the Remna panel.
+p.s. file must be placed in the same directory with this docker-compose file
+
+```yaml
+      volumes:
+        - ./app-config.json:/app/public/assets/app-config.json
+```
+
+Uncomment if you want to use local connection via single network in docker
+
+```yaml
+     networks:
+        - remnawave-network
 
 networks:
    remnawave-network:
-      name: remnawave-network
+     name: remnawave-network
       driver: bridge
       external: true
 ```
