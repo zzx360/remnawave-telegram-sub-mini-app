@@ -2,7 +2,6 @@ require('dotenv').config();
 
 import { useEffect, useLayoutEffect, useState } from 'react'
 import {useLocale, useTranslations} from "next-intl";
-import {initData, useSignal} from "@telegram-apps/sdk-react";
 
 
 import { Box, Button, Group, Select, Text } from '@mantine/core'
@@ -14,13 +13,12 @@ import {
     IconExternalLink
 } from '@tabler/icons-react'
 
-import {IUserData} from "@/types/types";
+import {IUserData} from "@/types/subscriptionData";
 import {IAppConfig, IPlatformConfig} from "@/types/appList";
-import {BaseInstallationGuideWidget} from "@/components/BaseInstallationGuideWidget";
+import {BaseInstallationGuideWidget} from "@/components/BaseInstallationGuideWidget/BaseInstallationGuideWidget";
 
 export const InstallationGuideWidget = ({ appsConfig, user, isCryptoLinkEnabled }: { appsConfig: IPlatformConfig, user: IUserData, isCryptoLinkEnabled: boolean | undefined }) => {
     const t = useTranslations();
-    const initDataState = useSignal(initData.state);
     const lang = useLocale();
 
     const os = useOs()

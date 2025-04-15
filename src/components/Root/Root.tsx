@@ -12,6 +12,8 @@ import {MantineProvider} from "@mantine/core";
 import {
   initData,
   useLaunchParams,
+    miniApp,
+    viewport,
   useSignal,
 } from '@telegram-apps/sdk-react';
 
@@ -27,12 +29,32 @@ import {theme} from "@/config/theme";
 
 function RootInner({ children }: PropsWithChildren) {
   const lp = useLaunchParams();
-  const debug = lp.startParam === 'debug';
+    const debug = lp.startParam === 'debug';
+
+    if (miniApp.mount.isAvailable()) {
+        miniApp.mount();
+    }
+    if (
+        miniApp.setHeaderColor.isAvailable()
+    ) {
+        miniApp.setHeaderColor('#161b22');
+        miniApp.headerColor();
+    }
+
+    if (miniApp.setBackgroundColor.isAvailable()) {
+        miniApp.setBackgroundColor('#161b22');
+        miniApp.backgroundColor();
+    }
+
+    if (viewport.expand.isAvailable()) {
+        viewport.expand();
+    }
 
   // Initialize the library.
   useClientOnce(() => {
     init(debug);
   });
+
   const initDataUser = useSignal(initData.user);
   // Set the user locale.
   useEffect(() => {

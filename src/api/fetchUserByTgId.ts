@@ -1,4 +1,4 @@
-import { subscriptionsResponse } from "@/types/types";
+import { subscriptionsResponse } from "@/types/subscriptionData";
 
 export async function fetchUserByTelegramId(telegramId: number) {
     try {
@@ -10,7 +10,7 @@ export async function fetchUserByTelegramId(telegramId: number) {
         });
 
         if (!res.ok) {
-            throw new Error('Error while fetching data from the remote API.');
+            throw new Error('from the remote API.');
         }
 
         const { response }: subscriptionsResponse = await res.json();

@@ -1,4 +1,4 @@
-name: Build Next.js Docker Image
+name: Build Remna Sub Telegram Mini App Docker Image
 
 on:
   push:
@@ -12,16 +12,13 @@ jobs:
     permissions:
       packages: write
     steps:
-      # Чекаут кода
       - uses: actions/checkout@v4
 
-      # Настройка Node.js (нужна для совместимости с alpine)
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      # Логин в GitHub Container Registry
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -29,16 +26,14 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Метаданные Docker
       - name: Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository_owner }}/remnawave-mini-bot
+          images: ghcr.io/${{ github.repository_owner }}/remnawave-telegram-sub-mini-app
           tags: |
             type=raw,value=latest
 
-      # Сборка и пуш
       - name: Build and push
         uses: docker/build-push-action@v6
         with:

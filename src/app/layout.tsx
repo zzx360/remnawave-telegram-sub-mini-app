@@ -8,8 +8,8 @@ import { I18nProvider } from '@/core/i18n/provider';
 import './_assets/globals.css';
 
 export const metadata: Metadata = {
-  title: 'Use own VPN',
-  description: 'Ваш личный кабинет',
+  title: 'Subscription Mini App',
+  description: 'Subscription Mini App',
 };
 
 export default async function RootLayout({ children }: PropsWithChildren) {
