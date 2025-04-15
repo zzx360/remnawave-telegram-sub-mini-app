@@ -1,140 +1,102 @@
-# Telegram Mini Apps Next.js Template
+# Remnawave Telegram Subscription Mini App
 
-This template demonstrates how developers can implement a web application on the
-Telegram Mini Apps platform using the following technologies and libraries:
+## Description
 
-- [Next.js](https://nextjs.org/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [TON Connect](https://docs.ton.org/develop/dapps/ton-connect/overview)
-- [@telegram-apps SDK](https://docs.telegram-mini-apps.com/packages/telegram-apps-sdk/2-x)
-- [Telegram UI](https://github.com/Telegram-Mini-Apps/TelegramUI)
+This is the **Telegram Subscription App** for Remnawave (https://remna.st/). 
+The page allows see their subscriptions directly through Telegram. As a requirement for using the page, the **Telegram ID** must be set in the user's profile to ensure proper identification and linking of subscriptions.
 
-> The template was created using [pnpm](https://pnpm.io/). Therefore, it is
-> required to use it for this project as well. Using other package managers, you
-> will receive a corresponding error.
 
-## Install Dependencies
 
-If you have just cloned this template, you should install the project
-dependencies using the command:
+## Features
 
-```Bash
-pnpm install
+- View subscriptions under your Telegram profile
+- Multi-language support (English, Russian)
+
+## Environment Variables
+
+The application requires the following environment variables to be set:
+
+| Variable          | Description                                                                                                          |
+|-------------------|----------------------------------------------------------------------------------------------------------------------|
+| `REMNAWAVE_URL`   | Remnawave API URL                                                                                                    |
+| `REMNAWAVE_MODE`  | Remnawave mode (remote/local), default is remote. If local set – you can pass http://remnawave:3000 to REMNAWAVE_URL |
+| `REMNAWAVE_TOKEN` | Authentication token for Remnawave API                                                                               |
+| `BUY_LINK`        | The URL for purchase actions                                                                                         |
+| `CRYPTO_LINK`     | Allows using encrypted links (currently supported Happ application)                                                  |
+
+
+## Plugins and Dependencies
+
+### Remnawave
+
+- [Remnawave-Subscription-Page](https://remna.st/subscription-templating/installation)
+
+### Telegram Bot
+
+- [Telegram Bot API](https://core.telegram.org/bots/api)
+- [Telegram Mini App SDK](https://github.com/telegram-mini-apps)
+
+## Setup Instructions
+
+1. Create new directory for mini app
+
+   ```bash
+   mkdir /opt/remnawave-telegram-sub-mini-app && cd /opt/remnawave-telegram-sub-mini-app
+   ```
+
+2. Download and configure the environment variables.
+
+   ```bash
+   curl -o .env 
+      ```
+
+3. Configure the environment variables.
+   ```bash
+   nano .env
+      ```
+   
+4. Create docker-compose.yml file, example below.
+
+```docker
+services:
+  remnawave-mini-app:
+    image: ghcr.io/maposia/remnawave-telegram-sub-mini-app:latest
+    container_name: remnawave-telegram-mini-app
+    hostname: remnawave-telegram-mini-app
+    env_file:
+      - .env
+    restart: always
+#    volumes:
+#      - ./app-config.json:/app/dist/assets/app-config.json
+    ports:
+      - '127.0.0.1:3020:3020'
+    networks:
+      - remnawave-network
+
+networks:
+  remnawave-network:
+    name: remnawave-network
+    driver: bridge
+    external: true
 ```
 
-## Scripts
+5. Run containers.
+   ```bash
+   docker compose up -d && docker compose logs -f
+   ```
+6. Mini app is now running on http://127.0.0.1:3020
 
-This project contains the following scripts:
+Now we are ready to move on the Reverse Proxy installation.
 
-- `dev`. Runs the application in development mode.
-- `dev:https`. Runs the application in development mode using self-signed SSL
-  certificate.
-- `build`. Builds the application for production.
-- `start`. Starts the Next.js server in production mode.
-- `lint`. Runs [eslint](https://eslint.org/) to ensure the code quality meets
-  the required
-  standards.
+## Update Instructions
 
-To run a script, use the `pnpm run` command:
+1. Pull the latest Docker image:
 
-```Bash
-pnpm run {script}
-# Example: pnpm run build
-```
+   ```bash
+   docker compose pull
+   ```
 
-## Create Bot and Mini App
-
-Before you start, make sure you have already created a Telegram Bot. Here is
-a [comprehensive guide](https://docs.telegram-mini-apps.com/platform/creating-new-app)
-on how to do it.
-
-## Run
-
-Although Mini Apps are designed to be opened
-within [Telegram applications](https://docs.telegram-mini-apps.com/platform/about#supported-applications),
-you can still develop and test them outside of Telegram during the development
-process.
-
-To run the application in the development mode, use the `dev` script:
-
-```bash
-pnpm run dev
-```
-
-After this, you will see a similar message in your terminal:
-
-```bash
-▲ Next.js 14.2.3
-- Local:        http://localhost:3000
-
-✓ Starting...
-✓ Ready in 2.9s
-```
-
-To view the application, you need to open the `Local`
-link (`http://localhost:3000` in this example) in your browser.
-
-It is important to note that some libraries in this template, such as
-`@telegram-apps/sdk`, are not intended for use outside of Telegram.
-
-Nevertheless, they appear to function properly. This is because the
-`src/hooks/useTelegramMock.ts` file, which is imported in the application's
-`Root` component, employs the `mockTelegramEnv` function to simulate the
-Telegram environment. This trick convinces the application that it is
-running in a Telegram-based environment. Therefore, be cautious not to use this
-function in production mode unless you fully understand its implications.
-
-### Run Inside Telegram
-
-Although it is possible to run the application outside of Telegram, it is
-recommended to develop it within Telegram for the most accurate representation
-of its real-world functionality.
-
-To run the application inside Telegram, [@BotFather](https://t.me/botfather)
-requires an HTTPS link.
-
-This template already provides a solution.
-
-To retrieve a link with the HTTPS protocol, consider using the `dev:https`
-script:
-
-```bash
-$ pnpm run dev:https
-
-▲ Next.js 14.2.3
-- Local:        https://localhost:3000
-
-✓ Starting...
-✓ Ready in 2.4s
-```
-
-Visiting the `Local` link (`https://localhost:3000` in this example) in your
-browser, you will see the following warning:
-
-
-This browser warning is normal and can be safely ignored as long as the site is
-secure. Click the `Proceed to localhost (unsafe)` button to continue and view
-the application.
-
-Once the application is displayed correctly, submit the
-link `https://127.0.0.1:3000` (`https://localhost:3000` is considered as invalid
-by BotFather) as the Mini App link to [@BotFather](https://t.me/botfather).
-Then, navigate to [https://web.telegram.org/k/](https://web.telegram.org/k/),
-find your bot, and launch the Telegram Mini App. This approach provides the full
-development experience.
-
-## Deploy
-
-The easiest way to deploy your Next.js app is to use
-the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)
-from the creators of Next.js.
-
-Check out
-the [Next.js deployment documentation](https://nextjs.org/docs/deployment) for
-more details.
-
-## Useful Links
-
-- [Platform documentation](https://docs.telegram-mini-apps.com/)
-- [@telegram-apps/sdk-react documentation](https://docs.telegram-mini-apps.com/packages/telegram-apps-sdk-react)
-- [Telegram developers community chat](https://t.me/devs)
+2. Restart the containers:
+   ```bash
+   docker compose down && docker compose up -d
+   ```
