@@ -16,6 +16,7 @@ import {IUserData} from "@/types/subscriptionData";
 
 import classes from './app.module.css'
 import {SubscribeCta} from "@/components/SubscribeCTA/SubscribeCTA";
+import {ErrorConnection} from "@/components/ErrorConnection/ErrorConnection";
 
 export default function Home() {
     const t = useTranslations();
@@ -27,6 +28,7 @@ export default function Home() {
     const [appsConfig, setAppsConfig] = useState<IPlatformConfig | null>(null)
     const [isLoading, setIsLoading] = useState(true);
     const [publicEnv, setPublicEnv] = useState<{ cryptoLink: boolean; buyLink: string } | null>(null);
+    const [errorConnect, setErrorConnect] = useState(false);
 
     const activeSubscription = subscription?.status && subscription?.status === 'ACTIVE'
 
@@ -57,6 +59,7 @@ export default function Home() {
                     const user = await fetchUserByTelegramId(telegramId);
                     if(user) setSubscription(user);
                 } catch (error) {
+                    setErrorConnect(true);
                     console.error('Failed to fetch subscription:', error)
 
                 } finally {
@@ -92,6 +95,17 @@ export default function Home() {
         fetchConfig()
     }, [])
 
+
+    if(errorConnect) return (
+        <Container className={classes.main}  my="xl" size="xl">
+            <Center>
+                <Stack gap="xl">
+                    <Title style={{textAlign: 'center'}} order={4}>{t('main.page.component.error-connect')}</Title>
+                    <ErrorConnection />
+                </Stack>
+            </Center>
+        </Container>
+    )
 
 
     if(isLoading || !appsConfig ) return (
