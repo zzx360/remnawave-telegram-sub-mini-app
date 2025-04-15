@@ -12,8 +12,8 @@ export async function GET(request: Request) {
 
         const baseUrl = process.env.REMNAWAVE_URL;
         const token = process.env.REMNAWAVE_TOKEN;
-        const httpMode = process.env.REMNAWAVE_MODE === 'local'
-        const url = httpMode ? `${baseUrl}/api/users/tg/${telegramId}` : `https://${baseUrl}/api/users/tg/${telegramId}`
+        const httpMode = process.env.REMNAWAVE_MODE === 'local' || process.env.REMNAWAVE_MODE === 'LOCAL' ? 'http' : 'https'
+        const url = `${httpMode}://${baseUrl}/api/users/tg/${telegramId}`
 
         const localHeadersParam = {
             'x-forwarded-for': '127.0.0.1',
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
 
         const headers = {
             Authorization: `Bearer ${token}`,
-            ...(httpMode ? localHeadersParam : {}),
+            ...(httpMode === 'http' ? localHeadersParam : {}),
         };
 
         const res = await fetch(url, {

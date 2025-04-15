@@ -30,6 +30,7 @@ export default function Home() {
     const [publicEnv, setPublicEnv] = useState<{ cryptoLink: boolean; buyLink: string } | null>(null);
     const [errorConnect, setErrorConnect] = useState(false);
 
+
     const activeSubscription = subscription?.status && subscription?.status === 'ACTIVE'
 
     useEffect(() => {
@@ -57,13 +58,15 @@ export default function Home() {
                 setIsLoading(true);
                 try {
                     const user = await fetchUserByTelegramId(telegramId);
-                    if(user) setSubscription(user);
+                    if(user) {
+                        setSubscription(user);
+                    }
                 } catch (error) {
+                    console.log(error)
                     setErrorConnect(true);
                     console.error('Failed to fetch subscription:', error)
-
                 } finally {
-                    setSubscriptionLoaded(true);
+                        setSubscriptionLoaded(true);
                     setIsLoading(false);
                 }
             };

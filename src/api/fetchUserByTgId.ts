@@ -16,6 +16,6 @@ export async function fetchUserByTelegramId(telegramId: number) {
         const { response }: subscriptionsResponse = await res.json();
         return response[0];
     } catch (error) {
-        console.error('Ошибка:', error);
+        throw error
     }
 }
