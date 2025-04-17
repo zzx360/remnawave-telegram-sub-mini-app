@@ -7,6 +7,7 @@ import {
     IconStar
 } from '@tabler/icons-react'
 import { Box, Button, Group, Text, ThemeIcon, Timeline } from '@mantine/core'
+import {Link} from "@/components/Link/Link";
 import {IAppConfig} from "@/types/appList";
 import {IPlatformGuideProps} from "@/types/platforGuide";
 import {useTranslations} from "next-intl";
@@ -175,15 +176,20 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
         : 'Add subscription description is not set'}
     </Text>
     {selectedApp && (
+        // <Link href={openDeepLink(
+        //     selectedApp.urlScheme,
+        //     selectedApp.isNeedBase64Encoding
+        // )} rel="noopener noreferrer" target='_blank'>
+        //     {t('installation-guide.widget.add-subscription-button')}
+        // </Link>
         <Button
-            onClick={() =>
-        openDeepLink(
-            selectedApp.urlScheme,
-            selectedApp.isNeedBase64Encoding
-        )
-    }
+        component={Link}
+        href={openDeepLink(
+                selectedApp.urlScheme,
+                selectedApp.isNeedBase64Encoding
+            )}
         variant="filled"
-            >
+        rel="noopener noreferrer" target='_blank' >
             {t('installation-guide.widget.add-subscription-button')}
         </Button>
     )}

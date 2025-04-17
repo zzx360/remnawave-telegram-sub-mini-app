@@ -78,11 +78,11 @@ export const InstallationGuideWidget = ({ appsConfig, user, isCryptoLinkEnabled 
         if (isNeedBase64Encoding) {
             const encoded = btoa(`${subscriptionUrl}`)
             const encodedUrl = `${urlScheme}${encoded}`
-            window.open(encodedUrl, '_blank')
+            return encodedUrl
         } else if(urlScheme.startsWith('happ') && isCryptoLinkEnabled) {
-            window.open(user.happ.cryptoLink, '_blank')
+            return user.happ.cryptoLink
         } else {
-            window.open(`${urlScheme}${subscriptionUrl}`, '_blank')
+           return `${urlScheme}${subscriptionUrl}`
 
         }
     }
