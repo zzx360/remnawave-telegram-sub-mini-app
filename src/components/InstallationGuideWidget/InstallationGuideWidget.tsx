@@ -82,7 +82,9 @@ export const InstallationGuideWidget = ({ appsConfig, user, isCryptoLinkEnabled 
         } else if(urlScheme.startsWith('happ') && isCryptoLinkEnabled) {
             return user.happ.cryptoLink
         } else {
-           return `${urlScheme}${subscriptionUrl}`
+            return os === 'windows'
+                ? `https://maposia.github.io/redirect-page/?redirect_to=${urlScheme}${subscriptionUrl}`
+                : `${urlScheme}${subscriptionUrl}`
 
         }
     }
