@@ -78,11 +78,13 @@ export const InstallationGuideWidget = ({ appsConfig, user, isCryptoLinkEnabled 
         if (isNeedBase64Encoding) {
             const encoded = btoa(`${subscriptionUrl}`)
             const encodedUrl = `${urlScheme}${encoded}`
-            return encodedUrl
+            window.open(encodedUrl, '_blank')
         } else if(urlScheme.startsWith('happ') && isCryptoLinkEnabled) {
-            return user.happ.cryptoLink
+            window.open(user.happ.cryptoLink, '_blank')
         } else {
-           return `${urlScheme}${subscriptionUrl}`
+            return os === 'windows'
+                ? window.open(`https://maposia.github.io/redirect-page/?redirect_to=${urlScheme}${subscriptionUrl}`, '_blank')
+                : window.open(`${urlScheme}${subscriptionUrl}`)
 
         }
     }
