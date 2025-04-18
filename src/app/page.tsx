@@ -27,7 +27,7 @@ export default function Home() {
     const [subscriptionLoaded, setSubscriptionLoaded] = useState(false)
     const [appsConfig, setAppsConfig] = useState<IPlatformConfig | null>(null)
     const [isLoading, setIsLoading] = useState(true);
-    const [publicEnv, setPublicEnv] = useState<{ cryptoLink: boolean; buyLink: string } | null>(null);
+    const [publicEnv, setPublicEnv] = useState<{ cryptoLink: boolean; buyLink: string, redirectLink: string } | null>(null);
     const [errorConnect, setErrorConnect] = useState(false);
 
 
@@ -139,7 +139,7 @@ export default function Home() {
                 <Stack gap="xl">
                         <SubscriptionInfoWidget user={subscription} />
                     {activeSubscription ? (
-                        <InstallationGuideWidget user={subscription}  appsConfig={appsConfig} isCryptoLinkEnabled={publicEnv?.cryptoLink} />
+                        <InstallationGuideWidget user={subscription}  appsConfig={appsConfig} isCryptoLinkEnabled={publicEnv?.cryptoLink} redirectLink={publicEnv?.redirectLink} />
                     ) : (
                         <SubscribeCta buyLink={publicEnv?.buyLink}/>
                     )}

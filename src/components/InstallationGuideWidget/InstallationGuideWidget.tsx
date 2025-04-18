@@ -17,7 +17,7 @@ import {IUserData} from "@/types/subscriptionData";
 import {IAppConfig, IPlatformConfig} from "@/types/appList";
 import {BaseInstallationGuideWidget} from "@/components/BaseInstallationGuideWidget/BaseInstallationGuideWidget";
 
-export const InstallationGuideWidget = ({ appsConfig, user, isCryptoLinkEnabled }: { appsConfig: IPlatformConfig, user: IUserData, isCryptoLinkEnabled: boolean | undefined }) => {
+export const InstallationGuideWidget = ({ appsConfig, user, isCryptoLinkEnabled, redirectLink }: { appsConfig: IPlatformConfig, user: IUserData, isCryptoLinkEnabled: boolean | undefined, redirectLink: string | undefined }) => {
     const t = useTranslations();
     const lang = useLocale();
 
@@ -83,7 +83,7 @@ export const InstallationGuideWidget = ({ appsConfig, user, isCryptoLinkEnabled 
             window.open(user.happ.cryptoLink, '_blank')
         } else {
             return os === 'windows'
-                ? window.open(`https://maposia.github.io/redirect-page/?redirect_to=${urlScheme}${subscriptionUrl}`, '_blank')
+                ? window.open(`${redirectLink}${urlScheme}${subscriptionUrl}`, '_blank')
                 : window.open(`${urlScheme}${subscriptionUrl}`)
 
         }
