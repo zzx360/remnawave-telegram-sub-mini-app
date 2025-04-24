@@ -80,12 +80,13 @@ export const InstallationGuideWidget = ({ appsConfig, user, isCryptoLinkEnabled,
             const encodedUrl = `${urlScheme}${encoded}`
             window.open(encodedUrl, '_blank')
         } else if(urlScheme.startsWith('happ') && isCryptoLinkEnabled) {
-            window.open(user.happ.cryptoLink, '_blank')
+            return os === 'windows'
+                ? window.open(`${redirectLink}${user.happ.cryptoLink}`, '_blank')
+                : window.open(user.happ.cryptoLink, '_blank')
         } else {
             return os === 'windows'
                 ? window.open(`${redirectLink}${urlScheme}${subscriptionUrl}`, '_blank')
                 : window.open(`${urlScheme}${subscriptionUrl}`)
-
         }
     }
 
