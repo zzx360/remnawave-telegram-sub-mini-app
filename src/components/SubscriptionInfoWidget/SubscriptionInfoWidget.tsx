@@ -122,7 +122,7 @@ export const SubscriptionInfoWidget = ({ user }: { user: IUserData }) => {
                             color="yellow"
                             icon={<IconArrowsUpDown size={20} />}
                             title={t('subscription-info.widget.bandwidth')}
-                            value={`${bytesToGigabytes(user.usedTrafficBytes)} / ${user.trafficLimitBytes === 0 ? '∞' : user.trafficLimitBytes}`}
+                            value={`${bytesToGigabytes(user.usedTrafficBytes)} / ${user.trafficLimitBytes === 0 ? '∞' : bytesToGigabytes(user.trafficLimitBytes)}`}
                         />
                     </SimpleGrid>
                 </Accordion.Panel>
