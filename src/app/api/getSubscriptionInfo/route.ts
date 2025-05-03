@@ -13,7 +13,7 @@ export async function GET(request: Request) {
         const baseUrl = process.env.REMNAWAVE_URL;
         const token = process.env.REMNAWAVE_TOKEN;
         const httpMode = process.env.REMNAWAVE_MODE === 'local' || process.env.REMNAWAVE_MODE === 'LOCAL' ? 'http' : 'https'
-        const url = `${httpMode}://${baseUrl}/api/users/tg/${telegramId}`
+        const url = `${httpMode}://${baseUrl}/api/users/by-telegram-id/${telegramId}`
 
         const localHeadersParam = {
             'x-forwarded-for': '127.0.0.1',
