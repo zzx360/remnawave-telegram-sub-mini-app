@@ -4,6 +4,10 @@ on:
   push:
     tags:
       - '*'
+    branches:
+      - main
+      - dev
+
   workflow_dispatch:
 
 jobs:
@@ -23,7 +27,6 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Add this step to set up BuildX
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
@@ -40,7 +43,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=sha,format=short,prefix=
-            type=ref,event=tag
+            type=raw,value=dev-latest,enable=${{ github.ref_name == 'dev' }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -72,6 +75,9 @@ jobs:
             if [ -z "$TAG_MSG" ]; then
               TAG_MSG="Release ${{ github.ref_name }}"
             fi
+          elif [[ "${{ github.ref_name }}" == "dev" ]]; then
+            # For dev branch events
+            TAG_MSG="Development build for dev"
           else
             # For workflow_dispatch or other events
             TAG_MSG="${{ github.event.head_commit.message || format('Manual build from {0}', github.ref_name) }}"
@@ -80,7 +86,6 @@ jobs:
           echo "$TAG_MSG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-
       - name: Send Telegram notification
         uses: appleboy/telegram-action@master
         with:
@@ -88,9 +93,7 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           message: |
             ✅ Build finished.
-            🚀 Project: remnawave-telegram-shop-bot
-            🛠️ ${{ github.ref_name }}
+            🚀 Project: remnawave-telegram-mini-app
+            🛠️ Branch: ${{ github.ref_name }}
             📝 Message: ${{ steps.commit-message.outputs.message }}
-            🔗 Image: ghcr.io/${{ github.repository_owner }}/remnawave-telegram-shop-bot:${{ github.ref_name }}
-
-
+            🔗 Image: ghcr.io/${{ github.repository_owner }}/remnawave-telegram-sub-mini-app:${{ github.ref_name == 'dev' && 'dev-latest' || github.ref_name }}
