@@ -62,6 +62,7 @@ jobs:
   send-notification:
     needs: build-docker-image
     runs-on: ubuntu-latest
+    if: "!contains(github.ref_name, 'dev-')"
     steps:
       - uses: actions/checkout@v4
         with:
