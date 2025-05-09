@@ -31,13 +31,21 @@ export async function GET(request: Request) {
         });
 
         if (!res.ok) {
-            console.error(`Error API: ${res.status} ${res.statusText}`);
+            const errorResponse = await res.json();
+
+            if (res.status === 404) {
+                console.error(`Error API: ${res.status} ${errorResponse.message}`);
+                return new Response(
+                    JSON.stringify({message: errorResponse.message}),
+                    {status: 404}
+                );
+            }
+
             return new Response(
                 JSON.stringify({ error: res.statusText }),
                 { status: res.status }
             );
         }
-
         const data = await res.json();
         return new Response(JSON.stringify(data), { status: 200 });
     } catch (error) {

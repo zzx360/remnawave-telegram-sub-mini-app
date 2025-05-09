@@ -10,10 +10,11 @@ export async function fetchUserByTelegramId(telegramId: number) {
         });
 
         if (!res.ok) {
-            if (res.status === 404) return
-            throw new Error('from the remote API.');
+            if (res.status === 404) {
+                const error = await res.json()
+                throw new Error(error.message)
+            }
         }
-
         const { response }: subscriptionsResponse = await res.json();
         return response[0];
     } catch (error) {

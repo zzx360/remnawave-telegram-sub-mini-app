@@ -62,7 +62,10 @@ export default function Home() {
                         setSubscription(user);
                     }
                 } catch (error) {
-                    setErrorConnect(true);
+                    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+                    if(errorMessage !== 'Users not found') {
+                        setErrorConnect(true);
+                    }
                     console.error('Failed to fetch subscription:', error)
                 } finally {
                         setSubscriptionLoaded(true);
