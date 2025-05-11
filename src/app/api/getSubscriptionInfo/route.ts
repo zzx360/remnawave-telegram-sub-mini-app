@@ -12,9 +12,10 @@ export async function GET(request: Request) {
 
         const baseUrl = process.env.REMNAWAVE_URL;
         const token = process.env.REMNAWAVE_TOKEN;
-        const tinyAuthToken =  process.env.TINYAUTH_TOKEN;
+        const oAuthToken =  process.env.AUTH_API_KEY;
         const httpMode = process.env.REMNAWAVE_MODE === 'local' || process.env.REMNAWAVE_MODE === 'LOCAL' ? 'http' : 'https'
-        const url = `${httpMode}://${baseUrl}/${telegramId}`
+        const url = `${httpMode}://${baseUrl}/api/users/by-telegram-id/${telegramId}`
+
 
         const localHeadersParam = {
             'x-forwarded-for': '127.0.0.1',
@@ -23,7 +24,7 @@ export async function GET(request: Request) {
 
         const headers = {
             Authorization: `Bearer ${token}`,
-            ...(tinyAuthToken ? { 'X-Api-Key': `Basic ${tinyAuthToken}` } : {}),
+            ...(oAuthToken ? { 'X-Api-Key': `${oAuthToken}` } : {}),
             ...(httpMode === 'http' ? localHeadersParam : {}),
         };
 
@@ -31,7 +32,6 @@ export async function GET(request: Request) {
             method: 'GET',
             headers,
         });
-        console.log(res)
 
         if (!res.ok) {
             const errorResponse = await res.json();
