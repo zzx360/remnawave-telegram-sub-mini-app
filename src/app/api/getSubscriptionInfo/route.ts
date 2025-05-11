@@ -12,8 +12,9 @@ export async function GET(request: Request) {
 
         const baseUrl = process.env.REMNAWAVE_URL;
         const token = process.env.REMNAWAVE_TOKEN;
+        const tinyAuthToken =  process.env.TINYAUTH_TOKEN;
         const httpMode = process.env.REMNAWAVE_MODE === 'local' || process.env.REMNAWAVE_MODE === 'LOCAL' ? 'http' : 'https'
-        const url = `${httpMode}://${baseUrl}/api/users/by-telegram-id/${telegramId}`
+        const url = `${httpMode}://${baseUrl}/${telegramId}`
 
         const localHeadersParam = {
             'x-forwarded-for': '127.0.0.1',
@@ -22,6 +23,7 @@ export async function GET(request: Request) {
 
         const headers = {
             Authorization: `Bearer ${token}`,
+            ...(tinyAuthToken ? { 'X-Api-Key': `Basic ${tinyAuthToken}` } : {}),
             ...(httpMode === 'http' ? localHeadersParam : {}),
         };
 
@@ -29,10 +31,10 @@ export async function GET(request: Request) {
             method: 'GET',
             headers,
         });
+        console.log(res)
 
         if (!res.ok) {
             const errorResponse = await res.json();
-
             if (res.status === 404) {
                 console.error(`Error API: ${res.status} ${errorResponse.message}`);
                 return new Response(
@@ -49,7 +51,8 @@ export async function GET(request: Request) {
         const data = await res.json();
         return new Response(JSON.stringify(data), { status: 200 });
     } catch (error) {
+        console.error('No connection to Remnawave API. Please check the availability of the API for the miniapp')
         console.error('Error:', error);
-        return new Response(JSON.stringify({ error: 'Server error.' }), { status: 500 });
+        return new Response(JSON.stringify({ error: 'Invalid response from external API (syntax error)\n' }), { status: 500 });
     }
 }
