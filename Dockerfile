@@ -56,11 +56,14 @@ RUN chown nextjs:nodejs .next
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+
 USER nextjs
 
-EXPOSE 3020
+# Используем переменную APP_PORT из .env или значение по умолчанию
+ARG DEFAULT_PORT=3020
+ENV PORT=${APP_PORT:-$DEFAULT_PORT}
+EXPOSE ${PORT}
 
-ENV PORT 3020
 # set hostname to localhost
 ENV HOSTNAME "0.0.0.0"
 

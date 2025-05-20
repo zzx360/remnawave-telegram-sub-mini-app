@@ -10,11 +10,11 @@ export async function GET(request: Request) {
             );
         }
 
-        const baseUrl = process.env.REMNAWAVE_URL;
+        const baseUrl = process.env.REMNAWAVE_PANEL_URL;
+        const localMode = baseUrl ? baseUrl.startsWith('http://') : false;
         const token = process.env.REMNAWAVE_TOKEN;
         const oAuthToken =  process.env.AUTH_API_KEY;
-        const httpMode = process.env.REMNAWAVE_MODE === 'local' || process.env.REMNAWAVE_MODE === 'LOCAL' ? 'http' : 'https'
-        const url = `${httpMode}://${baseUrl}/api/users/by-telegram-id/${telegramId}`
+        const url = `${baseUrl}/api/users/by-telegram-id/${telegramId}`
 
 
         const localHeadersParam = {
@@ -25,7 +25,7 @@ export async function GET(request: Request) {
         const headers = {
             Authorization: `Bearer ${token}`,
             ...(oAuthToken ? { 'X-Api-Key': `${oAuthToken}` } : {}),
-            ...(httpMode === 'http' ? localHeadersParam : {}),
+            ...(localMode ? localHeadersParam : {}),
         };
 
         const res = await fetch(url, {

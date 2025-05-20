@@ -115,7 +115,21 @@ export const SubscriptionInfoWidget = ({ user }: { user: IUserData }) => {
                             color="red"
                             icon={<IconCalendar size={20} />}
                             title={t('subscription-info.widget.expires')}
-                            value={formatDate(user.expireAt)}
+                            value={(() => {
+                                if (!user.expireAt) return '—';
+
+                                const fiftyYearsFromNow = new Date();
+                                fiftyYearsFromNow.setFullYear(fiftyYearsFromNow.getFullYear() + 50);
+
+                                const expireDate = new Date(user.expireAt);
+
+                                if (expireDate > fiftyYearsFromNow) {
+                                    return '∞';
+                                } else {
+                                    return formatDate(user.expireAt);
+                                }
+                            })()}
+
                         />
 
                         <InfoBlock
