@@ -41,7 +41,9 @@ export function bytesToGigabytes(bytes: number, decimals: number = 2): string {
     if (bytes < 0) {
         throw new Error('Количество байтов не может быть отрицательным');
     }
-    return prettyBytes(bytes, {maximumFractionDigits: 2});
+    return prettyBytes(bytes, {
+        maximumFractionDigits: 2,
+    });
 }
 
 

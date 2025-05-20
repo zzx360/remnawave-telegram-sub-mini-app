@@ -3,13 +3,12 @@
 import { useLocale } from 'next-intl';
 import {FC, useState} from 'react';
 
-import classes from './LocaleSwitcher.module.css'
-
 import { localesMap } from '@/core/i18n/config';
 import { setLocale } from '@/core/i18n/locale';
 import { Locale } from '@/core/i18n/types';
-import {Button, Group, Menu, useDirection, Text} from "@mantine/core";
-import {IconChevronDown} from "@tabler/icons-react";
+import {Button, Group, Menu, Text} from "@mantine/core";
+import { IconSettings} from "@tabler/icons-react";
+
 
 export const LocaleSwitcher: FC = () => {
   const locale = useLocale();
@@ -38,22 +37,20 @@ export const LocaleSwitcher: FC = () => {
 
   return (
       <Menu
+          width={120}
           onClose={() => setOpened(false)}
           onOpen={() => setOpened(true)}
           radius="md"
-          width="target"
           withinPortal
       >
         <Menu.Target>
           <Button color="grape" data-expanded={opened || undefined}>
             <Group gap="xs">
-              <Text>{selected.emoji}</Text>
-              <span>{selected.label}</span>
-              <IconChevronDown className={classes.icon} size={16} stroke={1.5} />
+              <IconSettings stroke={2} />
             </Group>
           </Button>
         </Menu.Target>
-        <Menu.Dropdown>{items}</Menu.Dropdown>
+        <Menu.Dropdown >{items}</Menu.Dropdown>
       </Menu>
   );
 };
