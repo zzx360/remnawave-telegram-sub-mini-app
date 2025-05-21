@@ -12,7 +12,7 @@ import dayjs from 'dayjs'
 import { useLocale, useTranslations } from 'next-intl'
 import { InfoBlock } from '@/components/InfoBlock/InfoBlock'
 
-import { bytesToGigabytes, calculateDaysLeft, getExpirationTextUtil } from '@/lib/utils'
+import { calculateDaysLeft, getExpirationTextUtil } from '@/lib/utils'
 import { GetSubscriptionInfoByShortUuidCommand } from '@remnawave/backend-contract'
 
 dayjs.extend(relativeTime)
@@ -22,6 +22,7 @@ export const SubscriptionInfoWidget = ({
 }: {
     user: GetSubscriptionInfoByShortUuidCommand.Response['response']
 }) => {
+    console.log(user)
     const t = useTranslations()
     const lang = useLocale()
 
@@ -139,10 +140,10 @@ export const SubscriptionInfoWidget = ({
                             color="yellow"
                             icon={<IconArrowsUpDown size={20} />}
                             title={t('subscription-info.widget.bandwidth')}
-                            value={`${bytesToGigabytes(user.user.trafficUsed)} / ${
+                            value={`${user.user.trafficUsed} / ${
                                 user.user.trafficLimit === '0'
                                     ? '∞'
-                                    : bytesToGigabytes(user.user.trafficLimit)
+                                    : user.user.trafficLimit
                             }`}
                         />
                     </SimpleGrid>
