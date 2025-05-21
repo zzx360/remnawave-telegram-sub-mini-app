@@ -1,49 +1,50 @@
-import dayjs from 'dayjs';
-import { useTranslations } from 'next-intl';
-import 'dayjs/locale/en';
-import 'dayjs/locale/ru';
-import relativeTime from 'dayjs/plugin/relativeTime';
-import prettyBytes from "pretty-bytes";
+import dayjs from 'dayjs'
+import { useTranslations } from 'next-intl'
+import 'dayjs/locale/en'
+import 'dayjs/locale/ru'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import prettyBytes from 'pretty-bytes'
 
+export const calculateDaysLeft = (expireAt: string | Date): number => {
+    const now = dayjs()
+    const expirationDate = dayjs(expireAt)
+    const diffInDays = expirationDate.diff(now, 'day')
 
-export const calculateDaysLeft = (expireAt: string): number => {
-    const now = dayjs();
-    const expirationDate = dayjs(expireAt);
-    const diffInDays = expirationDate.diff(now, 'day');
+    return diffInDays > 0 ? diffInDays : 0
+}
 
-    return diffInDays > 0 ? diffInDays : 0;
-};
-
-dayjs.extend(relativeTime);
+dayjs.extend(relativeTime)
 export function getExpirationTextUtil(
     expireAt: Date | null | string,
     t: ReturnType<typeof useTranslations>,
-    locale: string,
+    locale: string
 ): string {
     if (!expireAt) {
-        return t('get-expiration-text.util.unknown');
+        return t('get-expiration-text.util.unknown')
     }
 
-    const expiration = dayjs(expireAt).locale(locale);
-    const now = dayjs();
+    const expiration = dayjs(expireAt).locale(locale)
+    const now = dayjs()
     if (expiration.isBefore(now)) {
         return t('get-expiration-text.util.expired', {
-            expiration: expiration.fromNow(false),
-        });
+            expiration: expiration.fromNow(false)
+        })
+    }
+
+    if (expiration.add(50, 'year').isAfter(now)) {
+        return '∞'
     }
 
     return t('get-expiration-text.util.expires-in', {
-        expiration: expiration.fromNow(false),
-    });
+        expiration: expiration.fromNow(false)
+    })
 }
 
-export function bytesToGigabytes(bytes: number, decimals: number = 2): string {
-    if (bytes < 0) {
-        throw new Error('Количество байтов не может быть отрицательным');
+export function bytesToGigabytes(bytes: number | string, decimals: number = 2): string {
+    if (Number(bytes) < 0) {
+        throw new Error('Количество байтов не может быть отрицательным')
     }
-    return prettyBytes(bytes, {
-        maximumFractionDigits: 2,
-    });
+    return prettyBytes(Number(bytes), {
+        maximumFractionDigits: 2
+    })
 }
-
-

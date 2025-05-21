@@ -1,58 +1,98 @@
+import {
+    GetSubscriptionInfoByShortUuidCommand,
+    GetUserByTelegramIdCommand
+} from '@remnawave/backend-contract'
+import axios, { AxiosError } from 'axios'
+
+const baseUrl = process.env.REMNAWAVE_PANEL_URL
+const isHappCryptoLinkEnabled = process.env.CRYPTO_LINK === 'true'
+
+const instance = axios.create({
+    baseURL: baseUrl,
+    headers: {
+        Authorization: `Bearer ${process.env.REMNAWAVE_TOKEN}`
+    }
+})
+
+if (baseUrl ? baseUrl.startsWith('http://') : false) {
+    instance.defaults.headers.common['x-forwarded-for'] = '127.0.0.1'
+    instance.defaults.headers.common['x-forwarded-proto'] = 'https'
+}
+
+if (process.env.AUTH_API_KEY) {
+    instance.defaults.headers.common['X-Api-Key'] = `${process.env.AUTH_API_KEY}`
+}
+
 export async function GET(request: Request) {
     try {
-        const { searchParams } = new URL(request.url);
-        const telegramId = searchParams.get('telegramId');
+        const { searchParams } = new URL(request.url)
+        const telegramId = searchParams.get('telegramId')
 
         if (!telegramId) {
-            return new Response(
-                JSON.stringify({ error: 'telegramId is required' }),
-                { status: 400 }
-            );
+            return new Response(JSON.stringify({ error: 'telegramId is required' }), {
+                status: 400
+            })
         }
 
-        const baseUrl = process.env.REMNAWAVE_PANEL_URL;
-        const localMode = baseUrl ? baseUrl.startsWith('http://') : false;
-        const token = process.env.REMNAWAVE_TOKEN;
-        const oAuthToken =  process.env.AUTH_API_KEY;
-        const url = `${baseUrl}/api/users/by-telegram-id/${telegramId}`
+        const result = await instance.request<GetUserByTelegramIdCommand.Response>({
+            method: GetUserByTelegramIdCommand.endpointDetails.REQUEST_METHOD,
+            url: GetUserByTelegramIdCommand.url(telegramId)
+        })
 
+        if (result.status !== 200) {
+            console.error(`Error API: ${result.status} ${result.data}`)
+            return new Response(JSON.stringify({ error: result.data }), {
+                status: result.status
+            })
+        }
 
-        const localHeadersParam = {
-            'x-forwarded-for': '127.0.0.1',
-            'x-forwarded-proto': 'https',
-        };
+        if (result.data.response.length === 0) {
+            return new Response(JSON.stringify({ error: 'User not found' }), {
+                status: 404
+            })
+        }
 
-        const headers = {
-            Authorization: `Bearer ${token}`,
-            ...(oAuthToken ? { 'X-Api-Key': `${oAuthToken}` } : {}),
-            ...(localMode ? localHeadersParam : {}),
-        };
+        const shortUuid = result.data.response[0].shortUuid
 
-        const res = await fetch(url, {
-            method: 'GET',
-            headers,
-        });
+        const subscriptionInfo =
+            await instance.request<GetSubscriptionInfoByShortUuidCommand.Response>({
+                method: GetSubscriptionInfoByShortUuidCommand.endpointDetails.REQUEST_METHOD,
+                url: GetSubscriptionInfoByShortUuidCommand.url(shortUuid)
+            })
 
-        if (!res.ok) {
-            const errorResponse = await res.json();
-            if (res.status === 404) {
-                console.error(`Error API: ${res.status} ${errorResponse.message}`);
-                return new Response(
-                    JSON.stringify({message: errorResponse.message}),
-                    {status: 404}
-                );
+        if (subscriptionInfo.status !== 200) {
+            console.error('Error API:', subscriptionInfo.data)
+            return new Response(JSON.stringify({ error: 'Failed to get subscription info' }), {
+                status: 500
+            })
+        }
+
+        const response = subscriptionInfo.data.response
+
+        if (isHappCryptoLinkEnabled) {
+            // we need to remove links, ssConfLinks and subscriptionUrl from response
+            response.links = []
+            response.ssConfLinks = {}
+            response.subscriptionUrl = response.happ.cryptoLink
+        }
+
+        return new Response(JSON.stringify(response), { status: 200 })
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            if (error.response?.status === 404) {
+                console.error(
+                    `Error API: ${error.response?.status} ${error.response?.data.message}`
+                )
+                return new Response(JSON.stringify({ message: 'User not found' }), {
+                    status: 404
+                })
             }
 
-            return new Response(
-                JSON.stringify({ error: res.statusText }),
-                { status: res.status }
-            );
+            console.error('Error:', error)
+
+            return new Response(JSON.stringify({ error: 'Failed to get subscription info' }), {
+                status: 500
+            })
         }
-        const data = await res.json();
-        return new Response(JSON.stringify(data), { status: 200 });
-    } catch (error) {
-        console.error('No connection to Remnawave API. Please check the availability of the API for the miniapp')
-        console.error('Error:', error);
-        return new Response(JSON.stringify({ error: 'Invalid response from external API (syntax error)\n' }), { status: 500 });
     }
 }

@@ -1,8 +1,7 @@
-require('dotenv').config();
+require('dotenv').config()
 
 import { useEffect, useLayoutEffect, useState } from 'react'
-import {useLocale, useTranslations} from "next-intl";
-
+import { useLocale, useTranslations } from 'next-intl'
 
 import { Box, Button, Group, Select, Text } from '@mantine/core'
 import { useOs } from '@mantine/hooks'
@@ -13,13 +12,23 @@ import {
     IconExternalLink
 } from '@tabler/icons-react'
 
-import {IUserData} from "@/types/subscriptionData";
-import {IAppConfig, IPlatformConfig} from "@/types/appList";
-import {BaseInstallationGuideWidget} from "@/components/BaseInstallationGuideWidget/BaseInstallationGuideWidget";
+import { IAppConfig, IPlatformConfig } from '@/types/appList'
+import { BaseInstallationGuideWidget } from '@/components/BaseInstallationGuideWidget/BaseInstallationGuideWidget'
+import { GetSubscriptionInfoByShortUuidCommand } from '@remnawave/backend-contract'
 
-export const InstallationGuideWidget = ({ appsConfig, user, isCryptoLinkEnabled, redirectLink }: { appsConfig: IPlatformConfig, user: IUserData, isCryptoLinkEnabled: boolean | undefined, redirectLink: string | undefined }) => {
-    const t = useTranslations();
-    const lang = useLocale();
+export const InstallationGuideWidget = ({
+    appsConfig,
+    user,
+    isCryptoLinkEnabled,
+    redirectLink
+}: {
+    appsConfig: IPlatformConfig
+    user: GetSubscriptionInfoByShortUuidCommand.Response['response']
+    isCryptoLinkEnabled: boolean | undefined
+    redirectLink: string | undefined
+}) => {
+    const t = useTranslations()
+    const lang = useLocale()
 
     const os = useOs()
 
@@ -27,7 +36,7 @@ export const InstallationGuideWidget = ({ appsConfig, user, isCryptoLinkEnabled,
     const [defaultTab, setDefaultTab] = useState('pc')
 
     useEffect(() => {
-        if(lang) {
+        if (lang) {
             if (lang.startsWith('en')) {
                 setCurrentLang('en')
             } else if (lang.startsWith('fa')) {
@@ -38,7 +47,6 @@ export const InstallationGuideWidget = ({ appsConfig, user, isCryptoLinkEnabled,
                 setCurrentLang('en')
             }
         }
-
     }, [lang])
 
     useLayoutEffect(() => {
@@ -79,7 +87,7 @@ export const InstallationGuideWidget = ({ appsConfig, user, isCryptoLinkEnabled,
             const encoded = btoa(`${subscriptionUrl}`)
             const encodedUrl = `${urlScheme}${encoded}`
             window.open(encodedUrl, '_blank')
-        } else if(urlScheme.startsWith('happ') && isCryptoLinkEnabled) {
+        } else if (urlScheme.startsWith('happ') && isCryptoLinkEnabled) {
             return os === 'windows'
                 ? window.open(`${redirectLink}${user.happ.cryptoLink}`, '_blank')
                 : window.open(user.happ.cryptoLink, '_blank')
