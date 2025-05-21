@@ -94,5 +94,11 @@ export async function GET(request: Request) {
                 status: 500
             })
         }
+
+        // Добавляем обработку для других типов ошибок
+        console.error('Unexpected error:', error)
+        return new Response(JSON.stringify({ error: 'An unexpected error occurred' }), {
+            status: 500
+        })
     }
 }
