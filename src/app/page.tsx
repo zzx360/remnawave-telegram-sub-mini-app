@@ -36,6 +36,7 @@ export default function Home() {
         buyLink: string
         redirectLink: string
     } | null>(null)
+
     const [errorConnect, setErrorConnect] = useState(false)
 
     const activeSubscription =

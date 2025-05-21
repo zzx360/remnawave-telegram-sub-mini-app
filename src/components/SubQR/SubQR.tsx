@@ -15,7 +15,6 @@ export const SubscriptionQR = ({subscription}: {subscription: string}) => {
         whiteColor: '#161B22',
         blackColor: '#3CC9DB'
     })
-    console.log(subscription)
 
     const [open, setOpen] = useState(false)
 
