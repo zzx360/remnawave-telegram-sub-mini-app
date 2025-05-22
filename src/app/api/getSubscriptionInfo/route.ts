@@ -42,13 +42,13 @@ export async function GET(request: Request) {
         if (result.status !== 200) {
             console.error(`Error API: ${result.status} ${result.data}`)
             return new Response(JSON.stringify({ error: result.data }), {
-                status: result.status
+                status: result.status === 404 ? 422 : result.status
             })
         }
 
         if (result.data.response.length === 0) {
-            return new Response(JSON.stringify({ error: 'User not found' }), {
-                status: 404
+            return new Response(JSON.stringify({ error: 'Users not found' }), {
+                status: 422
             })
         }
 
@@ -83,8 +83,8 @@ export async function GET(request: Request) {
                 console.error(
                     `Error API: ${error.response?.status} ${error.response?.data.message}`
                 )
-                return new Response(JSON.stringify({ message: 'User not found' }), {
-                    status: 404
+                return new Response(JSON.stringify({ message: 'Users not found' }), {
+                    status: 422
                 })
             }
 
@@ -95,7 +95,6 @@ export async function GET(request: Request) {
             })
         }
 
-        // Добавляем обработку для других типов ошибок
         console.error('Unexpected error:', error)
         return new Response(JSON.stringify({ error: 'An unexpected error occurred' }), {
             status: 500

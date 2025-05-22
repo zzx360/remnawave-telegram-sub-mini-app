@@ -40,7 +40,7 @@ export default function Home() {
     const [errorConnect, setErrorConnect] = useState(false)
 
     const activeSubscription =
-        subscription?.user.userStatus && subscription?.user.userStatus === 'ACTIVE'
+        subscription?.user?.userStatus && subscription?.user?.userStatus === 'ACTIVE'
 
     useEffect(() => {
         setIsLoading(true)
@@ -68,6 +68,7 @@ export default function Home() {
                     if (user) {
                         setSubscription(user)
                     }
+
                 } catch (error) {
                     const errorMessage =
                         error instanceof Error ? error.message : 'Unknown error occurred'

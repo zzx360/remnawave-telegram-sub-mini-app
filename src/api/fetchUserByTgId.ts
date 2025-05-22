@@ -12,9 +12,12 @@ export async function fetchUserByTelegramId(
         })
 
         if (!res.ok) {
-            if (res.status === 404) {
+            if (res.status === 422) {
                 const error = await res.json()
                 throw new Error(error.message)
+            }
+            if(res.status === 500) {
+                throw new Error('Connect to server')
             }
         }
         return await res.json()

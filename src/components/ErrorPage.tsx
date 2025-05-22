@@ -4,13 +4,11 @@ import {Center, Flex, Title} from "@mantine/core";
 
 export function ErrorPage({
   error,
-  reset,
 }: {
   error: Error & { digest?: string }
   reset?: () => void
 }) {
   useEffect(() => {
-    // Log the error to an error reporting service
     console.error(error);
   }, [error]);
 
@@ -25,7 +23,6 @@ export function ErrorPage({
                 width={144}
                 height={144}
             />
-      {reset && <button onClick={() => reset()}>Try again</button>}
             </Flex>
         </Center>
     </div>
