@@ -25,6 +25,7 @@ if (process.env.AUTH_API_KEY) {
 
 export async function GET(request: Request) {
     try {
+        console.log(request)
         const { searchParams } = new URL(request.url)
         const telegramId = searchParams.get('telegramId')
 
@@ -83,7 +84,7 @@ export async function GET(request: Request) {
                 console.error(
                     `Error API: ${error.response?.status} ${error.response?.data.message}`
                 )
-                return new Response(JSON.stringify({ message: 'User not found' }), {
+                return new Response(JSON.stringify({ message: 'Users not found' }), {
                     status: 404
                 })
             }
@@ -95,7 +96,6 @@ export async function GET(request: Request) {
             })
         }
 
-        // Добавляем обработку для других типов ошибок
         console.error('Unexpected error:', error)
         return new Response(JSON.stringify({ error: 'An unexpected error occurred' }), {
             status: 500
