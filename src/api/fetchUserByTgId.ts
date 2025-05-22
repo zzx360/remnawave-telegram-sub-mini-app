@@ -16,6 +16,9 @@ export async function fetchUserByTelegramId(
                 const error = await res.json()
                 throw new Error(error.message)
             }
+            if(res.status ===500) {
+                throw new Error('Connect to server')
+            }
         }
         return await res.json()
     } catch (error) {
