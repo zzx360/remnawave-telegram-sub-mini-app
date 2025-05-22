@@ -40,7 +40,7 @@ export default function Home() {
     const [errorConnect, setErrorConnect] = useState(false)
 
     const activeSubscription =
-        subscription?.user.userStatus && subscription?.user.userStatus === 'ACTIVE'
+        subscription?.user?.userStatus && subscription?.user?.userStatus === 'ACTIVE'
 
     useEffect(() => {
         setIsLoading(true)
@@ -68,10 +68,11 @@ export default function Home() {
                     if (user) {
                         setSubscription(user)
                     }
+
                 } catch (error) {
                     const errorMessage =
                         error instanceof Error ? error.message : 'Unknown error occurred'
-                    if (errorMessage !== 'Users not found') {
+                    if (errorMessage !== 'User not found') {
                         setErrorConnect(true)
                     }
                     console.error('Failed to fetch subscription:', error)
