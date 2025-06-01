@@ -1,7 +1,7 @@
 import {Box, Button, Stack} from "@mantine/core";
 import classes from "@/app/app.module.css";
 import Lottie from "lottie-react";
-import noSubAnimate from "@public/assets/no-sub.json";
+import noSubAnimate from "@public/assets/anamations/no-sub.json";
 import {useTranslations} from "next-intl";
 
 export function SubscribeCta({buyLink}: {buyLink: string | undefined}) {

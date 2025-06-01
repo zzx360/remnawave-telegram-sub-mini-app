@@ -1,3 +1,7 @@
+import { useLocale, useTranslations } from 'next-intl'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { Accordion, rgba, SimpleGrid, Stack, Text, ThemeIcon } from '@mantine/core'
 import {
     IconAlertCircle,
     IconArrowsUpDown,
@@ -6,10 +10,6 @@ import {
     IconUser,
     IconX
 } from '@tabler/icons-react'
-import { Accordion, rgba, SimpleGrid, Stack, Text, ThemeIcon } from '@mantine/core'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import dayjs from 'dayjs'
-import { useLocale, useTranslations } from 'next-intl'
 import { InfoBlock } from '@/components/InfoBlock/InfoBlock'
 
 import { calculateDaysLeft, getExpirationTextUtil } from '@/lib/utils'
