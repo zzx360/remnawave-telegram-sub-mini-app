@@ -35,6 +35,38 @@ export const InstallationGuideWidget = ({
     const [currentLang, setCurrentLang] = useState<'en' | 'fa' | 'ru'>('en')
     const [defaultTab, setDefaultTab] = useState('pc')
 
+    // Filter apps with URL schemes starting with 'happ' if isCryptoLinkEnabled is true
+    // Otherwise use the full appsConfig
+    const filteredConfig = isCryptoLinkEnabled
+        ? {
+              ios: appsConfig.ios.filter((app) => app.urlScheme.startsWith('happ')),
+              android: appsConfig.android.filter((app) => app.urlScheme.startsWith('happ')),
+              pc: appsConfig.pc.filter((app) => app.urlScheme.startsWith('happ'))
+          }
+        : appsConfig
+
+    // Check if we have any apps when isCryptoLinkEnabled is true
+    const hasCryptoConfig = isCryptoLinkEnabled && (
+        filteredConfig.ios.length > 0 ||
+        filteredConfig.android.length > 0 ||
+        filteredConfig.pc.length > 0
+    )
+
+    // Show message if isCryptoLinkEnabled is true but no configs match the filter
+    if (isCryptoLinkEnabled && !hasCryptoConfig) {
+        return (
+            <Box>
+                <Text fw={700} size="xl" mb="md">
+                    {t('installation-guide.widget.installation')}
+                </Text>
+                <Text>
+                    {t('Crypto link configuration is not available')}
+                </Text>
+            </Box>
+        )
+    }
+
+
     useEffect(() => {
         if (lang) {
             if (lang.startsWith('en')) {
@@ -71,14 +103,11 @@ export const InstallationGuideWidget = ({
     if (!user) return null
 
     const hasPlatformApps = {
-        ios: appsConfig.ios && appsConfig.ios.length > 0,
-        android: appsConfig.android && appsConfig.android.length > 0,
-        pc: appsConfig.pc && appsConfig.pc.length > 0
+        ios: filteredConfig.ios && filteredConfig.ios.length > 0,
+        android: filteredConfig.android && filteredConfig.android.length > 0,
+        pc: filteredConfig.pc && filteredConfig.pc.length > 0
     }
 
-    if (!hasPlatformApps.ios && !hasPlatformApps.android && !hasPlatformApps.pc) {
-        return null
-    }
 
     const { subscriptionUrl } = user
 
@@ -99,36 +128,31 @@ export const InstallationGuideWidget = ({
     }
 
     const availablePlatforms = [
-        hasPlatformApps.android && {
+        {
             value: 'android',
             label: 'Android',
             icon: <IconBrandAndroid />
         },
-        hasPlatformApps.ios && {
+        {
             value: 'ios',
             label: 'iOS',
             icon: <IconBrandApple />
         },
-        hasPlatformApps.pc && {
+        {
             value: 'pc',
             label: t('installation-guide.widget.pc'),
             icon: <IconDeviceDesktop />
         }
-    ].filter(Boolean) as {
+    ] as {
         icon: React.ReactNode
         label: string
         value: string
     }[]
 
-    if (
-        !hasPlatformApps[defaultTab as keyof typeof hasPlatformApps] &&
-        availablePlatforms.length > 0
-    ) {
-        setDefaultTab(availablePlatforms[0].value)
-    }
+    console.log(availablePlatforms)
 
     const getAppsForPlatform = (platform: 'android' | 'ios' | 'pc') => {
-        return appsConfig[platform] || []
+        return filteredConfig[platform] || []
     }
 
     const getSelectedAppForPlatform = (platform: 'android' | 'ios' | 'pc') => {
@@ -207,18 +231,17 @@ export const InstallationGuideWidget = ({
                 )}
             </Group>
 
-            {hasPlatformApps[defaultTab as keyof typeof hasPlatformApps] && (
-                <BaseInstallationGuideWidget
-                    appsConfig={appsConfig}
-                    currentLang={currentLang}
-                    firstStepTitle={getPlatformTitle(defaultTab as 'android' | 'ios' | 'pc')}
-                    getAppsForPlatform={getAppsForPlatform}
-                    getSelectedAppForPlatform={getSelectedAppForPlatform}
-                    openDeepLink={openDeepLink}
-                    platform={defaultTab as 'android' | 'ios' | 'pc'}
-                    renderFirstStepButton={renderFirstStepButton}
-                />
-            )}
+            <BaseInstallationGuideWidget
+                appsConfig={filteredConfig}
+                currentLang={currentLang}
+                firstStepTitle={getPlatformTitle(defaultTab as 'android' | 'ios' | 'pc')}
+                getAppsForPlatform={getAppsForPlatform}
+                getSelectedAppForPlatform={getSelectedAppForPlatform}
+                openDeepLink={openDeepLink}
+                isCryptoLinkEnabled={isCryptoLinkEnabled}
+                platform={defaultTab as 'android' | 'ios' | 'pc'}
+                renderFirstStepButton={renderFirstStepButton}
+            />
         </Box>
     )
 }

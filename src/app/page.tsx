@@ -164,7 +164,6 @@ export default function Home() {
                             <SubscribeCta buyLink={publicEnv?.buyLink} />
                         )}
                     </Stack>
-                    <Center></Center>
                 </Stack>
             </Container>
         )
