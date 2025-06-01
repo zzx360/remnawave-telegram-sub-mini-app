@@ -128,8 +128,6 @@ export const InstallationGuideWidget = ({
         value: string
     }[]
 
-    console.log(availablePlatforms)
-
     const getAppsForPlatform = (platform: 'android' | 'ios' | 'pc') => {
         return filteredConfig[platform] || []
     }

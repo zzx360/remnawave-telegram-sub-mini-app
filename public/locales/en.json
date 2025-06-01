@@ -63,7 +63,8 @@
     "util": {
       "expires-in": "Expires {expiration}",
       "expired": "Expired {expiration} ago",
-      "unknown": "Unknown"
+      "unknown": "Unknown",
+      "infinity": "Valid until: ∞"
     }
   }
 }
