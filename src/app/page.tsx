@@ -37,7 +37,7 @@ export default function Home() {
         redirectLink: string
     } | null>(null)
 
-    const [errorConnect, setErrorConnect] = useState(false)
+    const [errorConnect, setErrorConnect] = useState<string | null>(null)
 
     const activeSubscription =
         subscription?.user?.userStatus && subscription?.user?.userStatus === 'ACTIVE'
@@ -73,7 +73,7 @@ export default function Home() {
                     const errorMessage =
                         error instanceof Error ? error.message : 'Unknown error occurred'
                     if (errorMessage !== 'Users not found') {
-                        setErrorConnect(true)
+                        setErrorConnect('ERR_FATCH_USER')
                     }
                     console.error('Failed to fetch subscription:', error)
                 } finally {
@@ -97,6 +97,7 @@ export default function Home() {
                 )
                 setAppsConfig(config)
             } catch (error) {
+                setErrorConnect('ERR_PARSE_APPCONFIG')
                 console.error('Failed to fetch app config:', error)
             } finally {
                 setIsLoading(false)
@@ -112,7 +113,12 @@ export default function Home() {
                 <Center>
                     <Stack gap="xl">
                         <Title style={{ textAlign: 'center' }} order={4}>
-                            {t('main.page.component.error-connect')}
+                            {errorConnect === 'ERR_FATCH_USER' ? (
+                                t('main.page.component.error-connect')
+                            ) : (
+                                t('main.page.component.error-parse-appconfig')
+                            )}
+
                         </Title>
                         <ErrorConnection />
                     </Stack>

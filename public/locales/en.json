@@ -6,6 +6,7 @@
         "no-sub": "You don't have a subscription",
         "podpiska": "Subscription",
         "error-connect": "Connection error",
+        "error-parse-appconfig": "Ошибка обработки App-config",
         "refresh": "Refresh"
       }
     }
