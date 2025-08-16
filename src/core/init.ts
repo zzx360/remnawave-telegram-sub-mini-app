@@ -7,6 +7,7 @@ import {
   $debug,
   init as initSDK,
 } from '@telegram-apps/sdk-react';
+import {consola} from "consola/browser";
 
 /**
  * Initializes the application and configures its dependencies.
@@ -27,7 +28,7 @@ export function init(debug: boolean): void {
   void viewport.mount().then(() => {
     viewport.bindCssVars();
   }).catch(e => {
-    console.error('Something went wrong mounting the viewport', e);
+    consola.error('Something went wrong mounting the viewport', e);
   });
 
   // Define components-related CSS variables.
@@ -37,5 +38,5 @@ export function init(debug: boolean): void {
   // Add Eruda if needed.
   debug && import('eruda')
     .then((lib) => lib.default.init())
-    .catch(console.error);
+    .catch(consola.error);
 }

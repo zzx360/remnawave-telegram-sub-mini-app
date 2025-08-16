@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import Image from "next/image";
 import {Center, Flex, Title} from "@mantine/core";
+import {consola} from "consola/browser";
 
 export function ErrorPage({
   error,
@@ -9,7 +10,7 @@ export function ErrorPage({
   reset?: () => void
 }) {
   useEffect(() => {
-    console.error(error);
+    consola.error(error);
   }, [error]);
 
   return (

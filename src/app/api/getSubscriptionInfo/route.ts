@@ -3,6 +3,7 @@ import {
     GetUserByTelegramIdCommand
 } from '@remnawave/backend-contract'
 import axios, { AxiosError } from 'axios'
+import {consola} from "consola/browser";
 
 const baseUrl = process.env.REMNAWAVE_PANEL_URL
 const isHappCryptoLinkEnabled = process.env.CRYPTO_LINK === 'true'
@@ -40,7 +41,7 @@ export async function GET(request: Request) {
         })
 
         if (result.status !== 200) {
-            console.error(`Error API: ${result.status} ${result.data}`)
+            consola.error(`Error API: ${result.status} ${result.data}`)
             return new Response(JSON.stringify({ error: result.data }), {
                 status: result.status === 404 ? 422 : result.status
             })
@@ -61,7 +62,7 @@ export async function GET(request: Request) {
             })
 
         if (subscriptionInfo.status !== 200) {
-            console.error('Error API:', subscriptionInfo.data)
+            consola.error('Error API:', subscriptionInfo.data)
             return new Response(JSON.stringify({ error: 'Failed to get subscription info' }), {
                 status: 500
             })
@@ -80,7 +81,7 @@ export async function GET(request: Request) {
     } catch (error) {
         if (error instanceof AxiosError) {
             if (error.response?.status === 404) {
-                console.error(
+                consola.error(
                     `Error API: ${error.response?.status} ${error.response?.data.message}`
                 )
                 return new Response(JSON.stringify({ message: 'Users not found' }), {
@@ -88,14 +89,14 @@ export async function GET(request: Request) {
                 })
             }
 
-            console.error('Error:', error)
+            consola.error('Error:', error)
 
             return new Response(JSON.stringify({ error: 'Failed to get subscription info' }), {
                 status: 500
             })
         }
 
-        console.error('Unexpected error:', error)
+        consola.error('Unexpected error:', error)
         return new Response(JSON.stringify({ error: 'An unexpected error occurred' }), {
             status: 500
         })

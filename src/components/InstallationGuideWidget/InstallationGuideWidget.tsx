@@ -1,3 +1,5 @@
+import {Link} from "@/components/Link/Link";
+
 require('dotenv').config()
 
 import { useEffect, useLayoutEffect, useState } from 'react'
@@ -7,12 +9,12 @@ import { Box, Button, Group, Select, Text } from '@mantine/core'
 import { useOs } from '@mantine/hooks'
 import {
     IconBrandAndroid,
-    IconBrandApple,
+    IconBrandApple, IconBrandWindows,
     IconDeviceDesktop,
     IconExternalLink
 } from '@tabler/icons-react'
 
-import { IAppConfig, IPlatformConfig } from '@/types/appList'
+import {IAppConfig, ISubscriptionPageAppConfig, TEnabledLocales, TPlatform} from '@/types/appList'
 import { BaseInstallationGuideWidget } from '@/components/BaseInstallationGuideWidget/BaseInstallationGuideWidget'
 import { GetSubscriptionInfoByShortUuidCommand } from '@remnawave/backend-contract'
 
@@ -20,44 +22,54 @@ export const InstallationGuideWidget = ({
     appsConfig,
     user,
     isCryptoLinkEnabled,
-    redirectLink
+    redirectLink,
+                                            enabledLocales
 }: {
-    appsConfig: IPlatformConfig
+    appsConfig: ISubscriptionPageAppConfig['platforms']
     user: GetSubscriptionInfoByShortUuidCommand.Response['response']
     isCryptoLinkEnabled: boolean | undefined
     redirectLink: string | undefined
+    enabledLocales: TEnabledLocales[]
 }) => {
     const t = useTranslations()
     const lang = useLocale()
 
     const os = useOs()
 
-    const [currentLang, setCurrentLang] = useState<'en' | 'fa' | 'ru'>('en')
+    const [currentLang, setCurrentLang] = useState<TEnabledLocales>('en')
     const [defaultTab, setDefaultTab] = useState('pc')
 
     // Filter apps with URL schemes starting with 'happ' if isCryptoLinkEnabled is true
     // Otherwise use the full appsConfig
     const filteredConfig = isCryptoLinkEnabled
         ? {
+        ...appsConfig,
               ios: appsConfig.ios.filter((app) => app.urlScheme.startsWith('happ')),
               android: appsConfig.android.filter((app) => app.urlScheme.startsWith('happ')),
-              pc: appsConfig.pc.filter((app) => app.urlScheme.startsWith('happ'))
-          }
-        : appsConfig
+              pc: appsConfig.windows.filter((app) => app.urlScheme.startsWith('happ')),
+              macos: appsConfig.macos.filter((app) => app.urlScheme.startsWith('happ')),
+              linux: appsConfig.windows.filter((app) => app.urlScheme.startsWith('happ'))
 
+        }
+        : appsConfig
 
     useEffect(() => {
         if (lang) {
-            if (lang.startsWith('en')) {
-                setCurrentLang('en')
-            } else if (lang.startsWith('fa')) {
-                setCurrentLang('fa')
-            } else if (lang.startsWith('ru')) {
-                setCurrentLang('ru')
-            } else {
-                setCurrentLang('en')
-            }
+
+        if (lang.startsWith('en')) {
+            setCurrentLang('en')
+        } else if (lang.startsWith('fa') && enabledLocales.includes('fa')) {
+            setCurrentLang('fa')
+        } else if (lang.startsWith('ru') && enabledLocales.includes('ru')) {
+            setCurrentLang('ru')
+        } else if (lang.startsWith('zh') && enabledLocales.includes('zh')) {
+            setCurrentLang('zh')
+        } else {
+            setCurrentLang('en')
         }
+
+        }
+
     }, [lang])
 
     useLayoutEffect(() => {
@@ -69,12 +81,16 @@ export const InstallationGuideWidget = ({
                 setDefaultTab('ios')
                 break
             case 'linux':
+                setDefaultTab('linux')
+                break
             case 'macos':
+                setDefaultTab('macos')
+                break
             case 'windows':
-                setDefaultTab('pc')
+                setDefaultTab('windows')
                 break
             default:
-                setDefaultTab('pc')
+                setDefaultTab('windows')
                 break
         }
     }, [os])
@@ -82,9 +98,13 @@ export const InstallationGuideWidget = ({
     if (!user) return null
 
     const hasPlatformApps = {
-        ios: filteredConfig.ios && filteredConfig.ios.length > 0,
-        android: filteredConfig.android && filteredConfig.android.length > 0,
-        pc: filteredConfig.pc && filteredConfig.pc.length > 0
+        ios: appsConfig.ios && appsConfig.ios.length > 0,
+        android: appsConfig.android && appsConfig.android.length > 0,
+        linux: appsConfig.linux && appsConfig.linux.length > 0,
+        macos: appsConfig.macos && appsConfig.macos.length > 0,
+        windows: appsConfig.windows && appsConfig.windows.length > 0,
+        androidTV: appsConfig.androidTV && appsConfig.androidTV.length > 0,
+        appleTV: appsConfig.appleTV && appsConfig.appleTV.length > 0
     }
 
 
@@ -107,32 +127,59 @@ export const InstallationGuideWidget = ({
     }
 
     const availablePlatforms = [
-        {
+        hasPlatformApps.android && {
             value: 'android',
             label: 'Android',
             icon: <IconBrandAndroid />
         },
-        {
+        hasPlatformApps.ios && {
             value: 'ios',
             label: 'iOS',
             icon: <IconBrandApple />
         },
-        {
-            value: 'pc',
-            label: t('installation-guide.widget.pc'),
+        hasPlatformApps.macos && {
+            value: 'macos',
+            label: 'macOS',
+            icon: <IconBrandApple />
+        },
+        hasPlatformApps.windows && {
+            value: 'windows',
+            label: 'Windows',
+            icon: <IconBrandWindows />
+        },
+        hasPlatformApps.linux && {
+            value: 'linux',
+            label: 'Linux',
             icon: <IconDeviceDesktop />
+        },
+        hasPlatformApps.androidTV && {
+            value: 'androidTV',
+            label: 'Android TV',
+            icon: <IconBrandAndroid />
+        },
+        hasPlatformApps.appleTV && {
+            value: 'appleTV',
+            label: 'Apple TV',
+            icon: <IconBrandApple />
         }
-    ] as {
+    ].filter(Boolean) as {
         icon: React.ReactNode
         label: string
         value: string
     }[]
 
-    const getAppsForPlatform = (platform: 'android' | 'ios' | 'pc') => {
-        return filteredConfig[platform] || []
+    if (
+        !hasPlatformApps[defaultTab as keyof typeof hasPlatformApps] &&
+        availablePlatforms.length > 0
+    ) {
+        setDefaultTab(availablePlatforms[0].value)
     }
 
-    const getSelectedAppForPlatform = (platform: 'android' | 'ios' | 'pc') => {
+    const getAppsForPlatform = (platform: TPlatform) => {
+        return appsConfig[platform] || []
+    }
+
+    const getSelectedAppForPlatform = (platform: TPlatform) => {
         const apps = getAppsForPlatform(platform)
         if (apps.length === 0) return null
         return apps[0]
@@ -147,7 +194,7 @@ export const InstallationGuideWidget = ({
 
                         return (
                             <Button
-                                component="a"
+                                component={Link}
                                 href={button.buttonLink}
                                 key={index}
                                 leftSection={<IconExternalLink size={16} />}
@@ -202,7 +249,7 @@ export const InstallationGuideWidget = ({
                         placeholder={t('installation-guide.widget.select-device')}
                         radius="md"
                         size="sm"
-                        style={{ width: 130 }}
+                        style={{ width: 140 }}
                         value={defaultTab}
                     />
                 )}
@@ -216,7 +263,7 @@ export const InstallationGuideWidget = ({
                 getSelectedAppForPlatform={getSelectedAppForPlatform}
                 openDeepLink={openDeepLink}
                 isCryptoLinkEnabled={isCryptoLinkEnabled}
-                platform={defaultTab as 'android' | 'ios' | 'pc'}
+                platform={defaultTab as TPlatform}
                 renderFirstStepButton={renderFirstStepButton}
             />
         </Box>

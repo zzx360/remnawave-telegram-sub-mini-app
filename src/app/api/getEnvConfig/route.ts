@@ -1,3 +1,5 @@
+import {consola} from "consola/browser";
+
 export async function POST() {
     try {
         const isHappCryptoLinkEnabled = process.env.CRYPTO_LINK === 'true'
@@ -8,7 +10,7 @@ export async function POST() {
         return new Response(JSON.stringify({cryptoLink: isHappCryptoLinkEnabled, buyLink, redirectLink}), { status: 200 });
 
     } catch (error) {
-        console.error('Error:', error);
+        consola.error('Error:', error);
         return new Response(JSON.stringify({ error: 'Server error.' }), { status: 500 });
     }
 }

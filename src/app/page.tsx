@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
-import { Center, Container, Group, Stack, Title } from '@mantine/core'
+import Image from "next/image";
+import {Center, Container, Group, Stack, Title} from '@mantine/core'
 import { fetchUserByTelegramId } from '@/api/fetchUserByTgId'
 import { fetchAppEnv } from '@/api/fetchAppEnv'
 import { initData, useSignal } from '@telegram-apps/sdk-react'
@@ -11,14 +12,16 @@ import { ofetch } from 'ofetch'
 import { LocaleSwitcher } from '@/components/LocaleSwitcher/LocaleSwitcher'
 import { SubscribeCta } from '@/components/SubscribeCTA/SubscribeCTA'
 import { ErrorConnection } from '@/components/ErrorConnection/ErrorConnection'
-import { SubscriptionQR } from '@/components/SubQR/SubQR'
+import {SubscriptionLinkWidget} from '@/components/SubQR/SubQR'
 import { SubscriptionInfoWidget } from '@/components/SubscriptionInfoWidget/SubscriptionInfoWidget'
 import { InstallationGuideWidget } from '@/components/InstallationGuideWidget/InstallationGuideWidget'
+import { consola } from "consola/browser";
 
-import { IPlatformConfig } from '@/types/appList'
+import {ISubscriptionPageAppConfig, TEnabledLocales} from '@/types/appList'
 
 import classes from './app.module.css'
 import { GetSubscriptionInfoByShortUuidCommand } from '@remnawave/backend-contract'
+import {isOldFormat} from "@/utils/migrateConfig";
 
 export default function Home() {
     const t = useTranslations()
@@ -29,7 +32,7 @@ export default function Home() {
         GetSubscriptionInfoByShortUuidCommand.Response['response'] | null
     >(null)
     const [subscriptionLoaded, setSubscriptionLoaded] = useState(false)
-    const [appsConfig, setAppsConfig] = useState<IPlatformConfig | null>(null)
+    const [appsConfig, setAppsConfig] = useState<ISubscriptionPageAppConfig | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [publicEnv, setPublicEnv] = useState<{
         cryptoLink: boolean
@@ -38,6 +41,18 @@ export default function Home() {
     } | null>(null)
 
     const [errorConnect, setErrorConnect] = useState<string | null>(null)
+
+    let additionalLocales: TEnabledLocales[] = ['en', 'ru', 'fa', 'zh']
+
+    if (appsConfig && appsConfig.config.additionalLocales !== undefined) {
+        additionalLocales = [
+            'en',
+            ...appsConfig.config.additionalLocales.filter((locale) =>
+                ['fa', 'ru', 'zh'].includes(locale)
+            )
+        ]
+    }
+
 
     const activeSubscription =
         subscription?.user?.userStatus && subscription?.user?.userStatus === 'ACTIVE'
@@ -50,7 +65,7 @@ export default function Home() {
                 const cofingEnv = await fetchAppEnv()
                 if (cofingEnv) setPublicEnv(cofingEnv)
             } catch (error) {
-                console.error('Failed to fetch app config:', error)
+                consola.error('Failed to fetch app config:', error)
             } finally {
                 setIsLoading(false)
             }
@@ -75,7 +90,7 @@ export default function Home() {
                     if (errorMessage !== 'Users not found') {
                         setErrorConnect('ERR_FATCH_USER')
                     }
-                    console.error('Failed to fetch subscription:', error)
+                    consola.error('Failed to fetch subscription:', error)
                 } finally {
                     setSubscriptionLoaded(true)
                     setIsLoading(false)
@@ -89,16 +104,39 @@ export default function Home() {
     useEffect(() => {
         const fetchConfig = async () => {
             try {
-                const config = await ofetch<IPlatformConfig>(
+                const tempConfig = await ofetch<ISubscriptionPageAppConfig>(
                     `/assets/app-config.json?v=${Date.now()}`,
                     {
                         parseResponse: JSON.parse
                     }
                 )
-                setAppsConfig(config)
+
+                let newConfig: ISubscriptionPageAppConfig | null = null
+
+                if (isOldFormat(tempConfig)) {
+                    consola.warn('Old config format detected, migrating to new format...')
+                    newConfig = {
+                        config: {
+                            additionalLocales: ['ru', 'fa', 'zh']
+                        },
+                        platforms: {
+                            ios: tempConfig.ios,
+                            android: tempConfig.android,
+                            windows: tempConfig.pc,
+                            macos: tempConfig.pc,
+                            linux: [],
+                            androidTV: [],
+                            appleTV: []
+                        }
+                    }
+                } else {
+                    newConfig = tempConfig
+                }
+
+                setAppsConfig(newConfig)
             } catch (error) {
                 setErrorConnect('ERR_PARSE_APPCONFIG')
-                console.error('Failed to fetch app config:', error)
+                consola.error('Failed to fetch app config:', error)
             } finally {
                 setIsLoading(false)
             }
@@ -148,13 +186,28 @@ export default function Home() {
                 <Stack gap="xl">
                     <Group justify="space-between">
                         <Group gap="xs">
-                            <Title order={4}>{t('main.page.component.podpiska')}</Title>
+                            {appsConfig.config.branding?.logoUrl && (
+                                <Image
+                                    src={appsConfig.config.branding.logoUrl}
+                                    height={36}
+                                    width={36}
+                                    alt="logo"
+                                    style={{
+                                        maxWidth: '36px',
+                                        maxHeight: '36px',
+                                        width: 'auto',
+                                        height: 'auto',
+                                        objectFit: 'contain'
+                                    }}
+                                />
+
+                            )}
+                            <Title order={4}>{appsConfig.config.branding?.name || t('main.page.component.podpiska')}</Title>
                         </Group>
                         <Group gap="xs">
                             {!publicEnv?.cryptoLink && (
-                                <SubscriptionQR subscription={subscription.subscriptionUrl} />
+                                <SubscriptionLinkWidget subscription={subscription.subscriptionUrl} supportUrl={appsConfig.config.branding?.supportUrl} />
                             )}
-                            <LocaleSwitcher />
                         </Group>
                     </Group>
                     <Stack gap="xl">
@@ -162,15 +215,17 @@ export default function Home() {
                         {activeSubscription ? (
                             <InstallationGuideWidget
                                 user={subscription}
-                                appsConfig={appsConfig}
+                                appsConfig={appsConfig.platforms}
                                 isCryptoLinkEnabled={publicEnv?.cryptoLink}
                                 redirectLink={publicEnv?.redirectLink}
+                                enabledLocales={additionalLocales}
                             />
                         ) : (
                             <SubscribeCta buyLink={publicEnv?.buyLink} />
                         )}
                     </Stack>
                 </Stack>
+                <LocaleSwitcher />
             </Container>
         )
 

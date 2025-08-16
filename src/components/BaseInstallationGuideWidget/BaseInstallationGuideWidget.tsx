@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react'
+import Lottie from "lottie-react";
 import {useTranslations} from "next-intl";
 import {Box, Button, Group, Text, ThemeIcon, Timeline} from '@mantine/core'
 import {
@@ -8,17 +9,16 @@ import {
     IconInfoCircle,
     IconStar
 } from '@tabler/icons-react'
-import {IAppConfig} from "@/types/appList";
-import {IPlatformGuideProps} from "@/types/platforGuide";
-import Lottie from "lottie-react";
 import noDataAnimate from "@public/assets/anamations/no-data-config.json";
+import {IAppConfig, ILocalizedText, TEnabledLocales, TPlatform} from "@/types/appList";
+import {IPlatformGuideProps} from "@/types/platforGuide";
 
 
 export interface IBaseGuideProps extends IPlatformGuideProps {
     firstStepTitle: string
-    platform: 'android' | 'ios' | 'pc'
+    platform: TPlatform
     renderFirstStepButton: (app: IAppConfig) => React.ReactNode
-    currentLang: 'en' | 'fa' | 'ru'
+    currentLang: TEnabledLocales
     isCryptoLinkEnabled: boolean | undefined
 }
 
@@ -51,7 +51,7 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
 
     const selectedApp =
         (activeTabId && platformApps.find((app) => app.id === activeTabId)) ||
-        (platformApps?.length > 0 ? platformApps[0] : null)
+        (platformApps.length > 0 ? platformApps[0] : null)
 
     const formattedTitle = selectedApp
         ? firstStepTitle.replace(/{appName}/g, selectedApp.name)
@@ -66,21 +66,18 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
         const stepData = app[step]
         if (!stepData) return ''
 
-        return stepData.description[currentLang] || stepData.description[currentLang] || ''
+        return stepData.description[currentLang] || ''
     }
 
 
-    const getButtonText = (button: { buttonText: { en: string; fa: string; ru: string } }) => {
-        return button.buttonText[currentLang] || button.buttonText[currentLang] || ''
+    const getButtonText = (button: { buttonText: ILocalizedText }) => {
+        return button.buttonText[currentLang] || ''
     }
 
-    const getStepTitle = (
-        stepData: { title?: { en: string; fa: string; ru: string } },
-        defaultTitle: string
-    ) => {
+    const getStepTitle = (stepData: { title?: ILocalizedText }, defaultTitle: string) => {
         if (!stepData || !stepData.title) return defaultTitle
 
-        return stepData.title[currentLang] || stepData.title[currentLang] || defaultTitle
+        return stepData.title[currentLang] || defaultTitle
     }
 
     return (
@@ -125,7 +122,7 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
                 }
                 title={formattedTitle}
             >
-                <Text c="dimmed" mb={16} size="sm">
+                <Text c="dimmed" mb={16} size="sm" style={{ whiteSpace: 'pre-line' }}>
                     {selectedApp ? getAppDescription(selectedApp, 'installationStep') : ''}
                 </Text>
                 {selectedApp && renderFirstStepButton(selectedApp)}
@@ -143,10 +140,10 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
                         'Additional step title is not set'
                     )}
                 >
-                    <Text c="dimmed" mb={16} size="sm">
+                    <Text c="dimmed" mb={16} size="sm" style={{ whiteSpace: 'pre-line' }}>
                         {selectedApp.additionalBeforeAddSubscriptionStep.description[
                             currentLang
-                        ] || selectedApp.additionalBeforeAddSubscriptionStep.description.en}
+                            ] || selectedApp.additionalBeforeAddSubscriptionStep.description.en}
                     </Text>
                     <Group>
                         {selectedApp.additionalBeforeAddSubscriptionStep.buttons.map(
@@ -174,7 +171,7 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
                 }
                 title={t('installation-guide.widget.add-subscription')}
             >
-                <Text c="dimmed" mb={16} size="sm">
+                <Text c="dimmed" mb={16} size="sm" style={{ whiteSpace: 'pre-line' }}>
                     {selectedApp
                         ? getAppDescription(selectedApp, 'addSubscriptionStep')
                         : 'Add subscription description is not set'}
@@ -206,10 +203,10 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
                         'Additional step title is not set'
                     )}
                 >
-                    <Text c="dimmed" mb={16} size="sm">
+                    <Text c="dimmed" mb={16} size="sm" style={{ whiteSpace: 'pre-line' }}>
                         {selectedApp.additionalAfterAddSubscriptionStep.description[
                             currentLang
-                        ] || selectedApp.additionalAfterAddSubscriptionStep.description.en}
+                            ] || selectedApp.additionalAfterAddSubscriptionStep.description.en}
                     </Text>
                     <Group>
                         {selectedApp.additionalAfterAddSubscriptionStep.buttons.map(
@@ -237,7 +234,7 @@ export const BaseInstallationGuideWidget = (props: IBaseGuideProps) => {
                 }
                 title={t('installation-guide.widget.connect-and-use')}
             >
-                <Text c="dimmed" size="sm">
+                <Text c="dimmed" size="sm" style={{ whiteSpace: 'pre-line' }}>
                     {selectedApp
                         ? getAppDescription(selectedApp, 'connectAndUseStep')
                         : 'Connect and use description is not set'}

@@ -12,7 +12,7 @@ import {
 } from '@tabler/icons-react'
 import { InfoBlock } from '@/components/InfoBlock/InfoBlock'
 
-import { calculateDaysLeft, getExpirationTextUtil } from '@/lib/utils'
+import { calculateDaysLeft, getExpirationTextUtil } from '@/utils/utils'
 import { GetSubscriptionInfoByShortUuidCommand } from '@remnawave/backend-contract'
 
 dayjs.extend(relativeTime)
