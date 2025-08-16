@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
-import Image from "next/image";
-import {Center, Container, Group, Stack, Title} from '@mantine/core'
+import {Center, Container, Group, Stack, Title,Image} from '@mantine/core'
 import { fetchUserByTelegramId } from '@/api/fetchUserByTgId'
 import { fetchAppEnv } from '@/api/fetchAppEnv'
 import { initData, useSignal } from '@telegram-apps/sdk-react'
@@ -188,16 +187,14 @@ export default function Home() {
                         <Group gap="xs">
                             {appsConfig.config.branding?.logoUrl && (
                                 <Image
-                                    src={appsConfig.config.branding.logoUrl}
-                                    height={36}
-                                    width={36}
                                     alt="logo"
+                                    fit="contain"
+                                    src={appsConfig.config.branding.logoUrl}
                                     style={{
                                         maxWidth: '36px',
                                         maxHeight: '36px',
                                         width: 'auto',
-                                        height: 'auto',
-                                        objectFit: 'contain'
+                                        height: 'auto'
                                     }}
                                 />
 
